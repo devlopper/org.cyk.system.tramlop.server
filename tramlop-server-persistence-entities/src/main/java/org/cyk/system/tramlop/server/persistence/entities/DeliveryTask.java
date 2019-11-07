@@ -2,6 +2,8 @@ package org.cyk.system.tramlop.server.persistence.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -10,6 +12,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringImpl;
+import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Existence;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,14 +26,25 @@ uniqueConstraints= {
 public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DELIVERY,unique = true) private Delivery delivery;
-	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DELIVERY,unique = true) private Task task;
+	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DELIVERY) private Delivery delivery;
+	@NotNull @ManyToOne @JoinColumn(name = COLUMN_TASK) private Task task;
+	@Embedded private Existence existence;
+	@Column(name=COLUMN_COMMENT) private String comment;
+	
+	public Existence getExistence(Boolean injectIfNull) {
+		if(existence == null && Boolean.TRUE.equals(injectIfNull))
+			existence = new Existence();
+		return existence;
+	}
 	
 	public static final String FIELD_DELIVERY = "delivery";
 	public static final String FIELD_TASK = "task";
+	public static final String FIELD_EXISTENCE = "existence";
+	public static final String FIELD_COMMENT = "comment";
 	
 	public static final String COLUMN_DELIVERY = Delivery.TABLE_NAME;
 	public static final String COLUMN_TASK = Task.TABLE_NAME;
+	public static final String COLUMN_COMMENT = FIELD_COMMENT;
 	
 	public static final String TABLE_NAME = Delivery.TABLE_NAME+Task.TABLE_NAME;
 	
