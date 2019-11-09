@@ -18,6 +18,8 @@
 		<microprofile.archive.name>tramlop-server</microprofile.archive.name>
 		<jboss-web.context-root>tramlop/server</jboss-web.context-root>
 		<web.context>/${jboss-web.context-root}</web.context>
+		<cyk.variable.system.identifier>tramplop.server</cyk.variable.system.identifier>
+		<cyk.variable.system.name>TRAMLOP</cyk.variable.system.name>
 	</properties>
 	
 	<dependencies>

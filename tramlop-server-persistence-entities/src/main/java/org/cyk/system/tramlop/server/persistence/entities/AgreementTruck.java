@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
-import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
+import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringImpl;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 uniqueConstraints= {
 		@UniqueConstraint(name=AgreementTruck.UNIQUE_CONSTRAINT_AGREEMENT_TRUCK_DRIVER_NAME,columnNames= {AgreementTruck.COLUMN_AGREEMENT,AgreementTruck.COLUMN_TRUCK,AgreementTruck.COLUMN_DRIVER}
 		)})
-public class AgreementTruck extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl implements Serializable {
+public class AgreementTruck extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_AGREEMENT) private Agreement agreement;

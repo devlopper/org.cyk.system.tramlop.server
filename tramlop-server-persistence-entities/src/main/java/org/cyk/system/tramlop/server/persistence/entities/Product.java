@@ -16,5 +16,15 @@ import lombok.experimental.Accessors;
 public class Product extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	public Product setCode(String code) {
+		return (Product) super.setCode(code);
+	}
+	
+	@Override
+	public Product setName(String name) {
+		return (Product) super.setName(name);
+	}
+	
 	public static final String TABLE_NAME = "product";	
 }
