@@ -8,19 +8,44 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.utility.__kernel__.instance.InstanceGetter;
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
+import org.cyk.utility.__kernel__.string.StringHelper;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Accessors(chain=true)
+@Getter @Setter @Accessors(chain=true) @NoArgsConstructor
 @Entity @Table(name=Delivery.TABLE_NAME)
 public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_AGREEMENT) private Agreement agreement;
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_TRUCK) private Truck truck;
+	
+	public Delivery(String code,String agreementCode,String truckCode) {
+		super(code);
+		setAgreementFromCode(agreementCode);
+		setTruckFromCode(truckCode);
+	}
+	
+	public Delivery setAgreementFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.agreement = null;
+		else
+			this.agreement = InstanceGetter.getInstance().getByBusinessIdentifier(Agreement.class, code);
+		return this;
+	}
+	
+	public Delivery setTruckFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.truck = null;
+		else
+			this.truck = InstanceGetter.getInstance().getByBusinessIdentifier(Truck.class, code);
+		return this;
+	}
 	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_TRUCK = "truck";

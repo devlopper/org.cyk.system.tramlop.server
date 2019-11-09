@@ -8,15 +8,21 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Accessors(chain=true)
+@Getter @Setter @Accessors(chain=true) @NoArgsConstructor
 @Entity @Table(name=Weighing.TABLE_NAME)
 public class Weighing extends AbstractDeliveryTaskDetailsImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @Column(name=COLUMN_WEIGHT_IN_KILO_GRAM) private Integer weightInKiloGram;
+	
+	public Weighing(String deliveryTaskIdentifier,Integer weightInKiloGram) {
+		super(deliveryTaskIdentifier);
+		setWeightInKiloGram(weightInKiloGram);
+	}
 	
 	/**/
 	

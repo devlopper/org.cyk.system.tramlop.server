@@ -11,14 +11,17 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.utility.__kernel__.instance.InstanceGetter;
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringImpl;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Existence;
+import org.cyk.utility.__kernel__.string.StringHelper;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Accessors(chain=true)
+@Getter @Setter @Accessors(chain=true) @NoArgsConstructor
 @Entity @Table(name=DeliveryTask.TABLE_NAME,
 uniqueConstraints= {
 		@UniqueConstraint(name=DeliveryTask.UNIQUE_CONSTRAINT_DELIVERY_TASK,columnNames= {DeliveryTask.COLUMN_DELIVERY,DeliveryTask.COLUMN_TASK}
@@ -30,6 +33,28 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_TASK) private Task task;
 	@Embedded private Existence existence;
 	@Column(name=COLUMN_COMMENT) private String comment;
+	
+	public DeliveryTask(String identifier,String deliveryCode,String taskCode) {
+		setIdentifier(identifier);
+		setDeliveryFromCode(deliveryCode);
+		setTaskFromCode(taskCode);
+	}
+	
+	public DeliveryTask setDeliveryFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.delivery = null;
+		else
+			this.delivery = InstanceGetter.getInstance().getByBusinessIdentifier(Delivery.class, code);
+		return this;
+	}
+	
+	public DeliveryTask setTaskFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.task = null;
+		else
+			this.task = InstanceGetter.getInstance().getByBusinessIdentifier(Task.class, code);
+		return this;
+	}
 	
 	public Existence getExistence(Boolean injectIfNull) {
 		if(existence == null && Boolean.TRUE.equals(injectIfNull))
