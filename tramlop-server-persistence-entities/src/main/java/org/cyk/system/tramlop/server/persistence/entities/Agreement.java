@@ -28,13 +28,15 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_CUSTOMER) private Customer customer;
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PRODUCT) private Product product;
 	@NotNull @Column(name=COLUMN_PRODUCT_WEIGHT_IN_KILO_GRAM) private Integer productWeightInKiloGram;
+	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DEPARTURE_PLACE) private Place departurePlace;
 	@Embedded private Existence existence;
 	
-	public Agreement(String code,String customerCode,String productCode,Integer productWeightInKiloGram) {
+	public Agreement(String code,String customerCode,String productCode,Integer productWeightInKiloGram,String departurePlaceCode) {
 		super(code);
 		setCustomerFromCode(customerCode);
 		setProductFromCode(productCode);
 		setProductWeightInKiloGram(productWeightInKiloGram);
+		setDeparturePlaceFromCode(departurePlaceCode);
 	}
 	
 	public Existence getExistence(Boolean injectIfNull) {
@@ -59,14 +61,24 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 		return this;
 	}
 	
+	public Agreement setDeparturePlaceFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.departurePlace = null;
+		else
+			this.departurePlace = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
+		return this;
+	}
+	
 	public static final String FIELD_CUSTOMER = "customer";
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_PRODUCT_WEIGHT_IN_KILO_GRAM = "productWeightInKiloGram";
 	public static final String FIELD_EXISTENCE = "existence";
+	public static final String FIELD_DEPARTURE_PLACE = "departurePlace";
 	
 	public static final String COLUMN_CUSTOMER = Customer.TABLE_NAME;
 	public static final String COLUMN_PRODUCT = Product.TABLE_NAME;
 	public static final String COLUMN_PRODUCT_WEIGHT_IN_KILO_GRAM = FIELD_PRODUCT_WEIGHT_IN_KILO_GRAM;
+	public static final String COLUMN_DEPARTURE_PLACE = FIELD_DEPARTURE_PLACE;
 	
 	public static final String TABLE_NAME = "agreement";
 }

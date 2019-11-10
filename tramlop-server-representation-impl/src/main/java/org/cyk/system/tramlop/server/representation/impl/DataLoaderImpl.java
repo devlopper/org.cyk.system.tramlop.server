@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import org.cyk.system.tramlop.server.business.api.AgreementArrivalPlaceBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementBusiness;
-import org.cyk.system.tramlop.server.business.api.AgreementPathBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementTruckBusiness;
 import org.cyk.system.tramlop.server.business.api.CustomerBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryBusiness;
@@ -19,7 +19,7 @@ import org.cyk.system.tramlop.server.business.api.TaskBusiness;
 import org.cyk.system.tramlop.server.business.api.TruckBusiness;
 import org.cyk.system.tramlop.server.business.api.WeighingBusiness;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
-import org.cyk.system.tramlop.server.persistence.entities.AgreementPath;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Customer;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
@@ -58,11 +58,12 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 		__inject__(PlaceBusiness.class).createMany(List.of(new Place("PAA","Port Autônome d'Abidjan",null,null),new Place("BK","Bouaké",null,null)
 				,new Place("AY","Ayama",null,null),new Place("AGB","Agboville",null,null),new Place("MAN","Man",null,null),new Place("SP","San Perdro",null,null)));
 		
-		__inject__(PathBusiness.class).createMany(List.of(new Path("PAA_BK","PAA","BK",60 * 2),new Path("PAA_MAN","PAA","MAN",60 * 6)));
+		__inject__(PathBusiness.class).createMany(List.of(new Path("PAA_BK","PAA","BK",60 * 2),new Path("PAA_MAN","PAA","MAN",60 * 6),new Path("PAA_SP","PAA","SP",60 * 7)));
 		
-		__inject__(AgreementBusiness.class).createMany(List.of(new Agreement("c01","c01","SABLE",10000)));
+		__inject__(AgreementBusiness.class).createMany(List.of(new Agreement("c01","c01","SABLE",10000,"PAA")));
 		__inject__(AgreementTruckBusiness.class).createMany(List.of(new AgreementTruck("c01","0101AA01","d01")));
-		__inject__(AgreementPathBusiness.class).createMany(List.of(new AgreementPath("c01","PAA_BK")));
+		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","BK")));
+		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","SP")));
 		
 		__inject__(DeliveryBusiness.class).createMany(List.of(new Delivery("l01","c01","0101AA01")));
 		

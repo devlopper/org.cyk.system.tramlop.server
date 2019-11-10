@@ -12,6 +12,7 @@
     	<class>org.cyk.system.tramlop.server.persistence.entities.Task</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.Agreement</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.AgreementPath</class>
+    	<class>org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.AgreementTruck</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.Delivery</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.DeliveryTask</class>

@@ -12,4 +12,6 @@ import lombok.experimental.Accessors;
 public class TruckDto extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private DriverDto driver;
+	
 }
