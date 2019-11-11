@@ -1,17 +1,20 @@
 package org.cyk.system.tramlop.server.representation.impl;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
 
 import org.cyk.system.tramlop.server.business.api.AgreementArrivalPlaceBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementBusiness;
+import org.cyk.system.tramlop.server.business.api.AgreementProductBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementTruckBusiness;
 import org.cyk.system.tramlop.server.business.api.CustomerBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryTaskBusiness;
 import org.cyk.system.tramlop.server.business.api.DriverBusiness;
+import org.cyk.system.tramlop.server.business.api.IncidentTypeBusiness;
 import org.cyk.system.tramlop.server.business.api.PathBusiness;
 import org.cyk.system.tramlop.server.business.api.PlaceBusiness;
 import org.cyk.system.tramlop.server.business.api.ProductBusiness;
@@ -20,11 +23,13 @@ import org.cyk.system.tramlop.server.business.api.TruckBusiness;
 import org.cyk.system.tramlop.server.business.api.WeighingBusiness;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Customer;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Driver;
+import org.cyk.system.tramlop.server.persistence.entities.IncidentType;
 import org.cyk.system.tramlop.server.persistence.entities.Path;
 import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
@@ -41,11 +46,13 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 
 	@Override
 	protected Response __execute__() throws Exception {
+		__inject__(IncidentTypeBusiness.class).createMany(List.of(new IncidentType(IncidentType.CODE_UNKNOWN,"Inconnu")));
+		
 		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE,"Peser à vide",1),new Task(Task.CODE_CHARGE,"Charger",2)
 				,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
 				,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7)));
 		
-		__inject__(ProductBusiness.class).createMany(List.of(new Product("SABLE","Sable"),new Product("GRAVIER","Gravier")));
+		__inject__(ProductBusiness.class).createMany(List.of(new Product("SABLE","Sable",new BigDecimal("0.05")),new Product("GRAVIER","Gravier",new BigDecimal("0.01"))));
 		
 		__inject__(TruckBusiness.class).createMany(List.of(new Truck("0101AA01"),new Truck("0202AA01"),new Truck("0303AA01"),new Truck("0404BB01"),new Truck("0202CC01")));
 		
@@ -60,12 +67,13 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 		
 		__inject__(PathBusiness.class).createMany(List.of(new Path("PAA_BK","PAA","BK",60 * 2),new Path("PAA_MAN","PAA","MAN",60 * 6),new Path("PAA_SP","PAA","SP",60 * 7)));
 		
-		__inject__(AgreementBusiness.class).createMany(List.of(new Agreement("c01","c01","SABLE",10000,"PAA")));
+		__inject__(AgreementBusiness.class).createMany(List.of(new Agreement("c01","c01","PAA",Boolean.FALSE)));
+		__inject__(AgreementProductBusiness.class).createMany(List.of(new AgreementProduct("c01","SABLE",10000)));
 		__inject__(AgreementTruckBusiness.class).createMany(List.of(new AgreementTruck("c01","0101AA01","d01")));
-		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","BK")));
-		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","SP")));
+		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","BK",60*3)));
+		__inject__(AgreementArrivalPlaceBusiness.class).createMany(List.of(new AgreementArrivalPlace("c01","SP",60*5)));
 		
-		__inject__(DeliveryBusiness.class).createMany(List.of(new Delivery("l01","c01","0101AA01")));
+		__inject__(DeliveryBusiness.class).createMany(List.of(new Delivery("l01","c01","SABLE","0101AA01","d01",Boolean.FALSE)));
 		
 		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0101","l01",Task.CODE_PESE_VIDE)));
 		__inject__(WeighingBusiness.class).createMany(List.of(new Weighing("dtl0101",5000)));

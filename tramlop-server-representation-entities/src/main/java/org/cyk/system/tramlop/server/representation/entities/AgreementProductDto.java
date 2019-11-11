@@ -9,14 +9,14 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @Accessors(chain=true)
-public class AgreementArrivalPlaceDto extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
+public class AgreementProductDto extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private AgreementDto agreement;
-	private PlaceDto place;
-	private Integer durationInMinute;
+	private ProductDto truck;
+	private Integer weightInKiloGram;
 	
 	public static final String FIELD_AGREEMENT = "agreement";
-	public static final String FIELD_PLACE = "place";
-	public static final String FIELD_DURATION_IN_MINUTE = "durationInMinute";
+	public static final String FIELD_PRODUCT = "product";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
 }

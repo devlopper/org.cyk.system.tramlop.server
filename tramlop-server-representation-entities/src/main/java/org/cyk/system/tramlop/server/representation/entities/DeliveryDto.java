@@ -13,8 +13,14 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private static final long serialVersionUID = 1L;
 
 	private AgreementDto agreement;
+	private ProductDto product;
 	private TruckDto truck;
+	private DriverDto driver;
+	private Boolean closed;
 	
 	public static final String FIELD_AGREEMENT = "agreement";
+	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_TRUCK = "truck";
+	public static final String FIELD_DRIVER = "driver";
+	public static final String FIELD_CLOSED = "closed";
 }

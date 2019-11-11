@@ -17,6 +17,7 @@ public class AgreementDto extends AbstractIdentifiableSystemScalarStringIdentifi
 	private ProductDto product;
 	private Integer productWeightInKiloGram;
 	private ExistenceDto existence;
+	private Boolean closed;
 	
 	public ExistenceDto getExistence(Boolean injectIfNull) {
 		if(existence == null && Boolean.TRUE.equals(injectIfNull))
@@ -28,4 +29,5 @@ public class AgreementDto extends AbstractIdentifiableSystemScalarStringIdentifi
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_PRODUCT_WEIGHT_IN_KILO_GRAM = "productWeightInKiloGram";
 	public static final String FIELD_EXISTENCE = "existence";
+	public static final String FIELD_CLOSED = "closed";
 }

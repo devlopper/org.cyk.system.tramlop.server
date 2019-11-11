@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl;
 
@@ -22,6 +23,8 @@ public class Place extends AbstractIdentifiableSystemScalarStringIdentifiableBus
 	@Column(name = COLUMN_LONGITUDE) private BigDecimal longitude;
 	@Column(name = COLUMN_LATITUDE) private BigDecimal latitude;
 	
+	@Transient private Integer durationInMinute;
+	
 	public Place(String code,String name,BigDecimal longitude,BigDecimal latitude) {
 		super(code,name);
 		this.longitude = longitude;
@@ -30,6 +33,7 @@ public class Place extends AbstractIdentifiableSystemScalarStringIdentifiableBus
 	
 	public static final String FIELD_LONGITUDE = "longitude";
 	public static final String FIELD_LATITUDE = "latitude";
+	public static final String FIELD_DURATION_IN_MINUTE = "durationInMinute";
 	
 	public static final String COLUMN_LONGITUDE = FIELD_LONGITUDE;
 	public static final String COLUMN_LATITUDE = FIELD_LATITUDE;

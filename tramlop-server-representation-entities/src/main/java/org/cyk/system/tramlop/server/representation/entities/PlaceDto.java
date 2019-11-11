@@ -15,7 +15,9 @@ public class PlaceDto extends AbstractIdentifiableSystemScalarStringIdentifiable
 
 	private BigDecimal longitude;
 	private BigDecimal latitude;
+	private Integer durationInMinute;
 	
 	public static final String FIELD_LONGITUDE = "longitude";
 	public static final String FIELD_LATITUDE = "latitude";
+	public static final String FIELD_DURATION_IN_MINUTE = "durationInMinute";
 }

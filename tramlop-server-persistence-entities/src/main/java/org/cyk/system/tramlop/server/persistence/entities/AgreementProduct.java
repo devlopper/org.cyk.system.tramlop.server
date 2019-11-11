@@ -20,24 +20,24 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Getter @Setter @Accessors(chain=true) @NoArgsConstructor
-@Entity @Table(name=AgreementArrivalPlace.TABLE_NAME,
+@Entity @Table(name=AgreementProduct.TABLE_NAME,
 uniqueConstraints= {
-		@UniqueConstraint(name=AgreementArrivalPlace.UNIQUE_CONSTRAINT_AGREEMENT_PLACE_NAME,columnNames= {AgreementArrivalPlace.COLUMN_AGREEMENT,AgreementArrivalPlace.COLUMN_PLACE}
+		@UniqueConstraint(name=AgreementProduct.UNIQUE_CONSTRAINT_AGREEMENT_PRODUCT_NAME,columnNames= {AgreementProduct.COLUMN_AGREEMENT,AgreementProduct.COLUMN_PRODUCT}
 		)})
-public class AgreementArrivalPlace extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
+public class AgreementProduct extends AbstractIdentifiableSystemScalarStringImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_AGREEMENT) private Agreement agreement;
-	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PLACE) private Place place;
-	@NotNull @Column(name = COLUMN_DURATION_IN_MINUTE) private Integer durationInMinute;
+	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PRODUCT) private Product product;
+	@NotNull @Column(name = COLUMN_WEIGHT_IN_KILO_GRAM) private Integer weightInKiloGram;
 	
-	public AgreementArrivalPlace(String agreementCode,String placeCode,Integer durationInMinute) {
+	public AgreementProduct(String agreementCode,String productCode,Integer weightInKiloGram) {
 		setAgreementFromCode(agreementCode);
-		setPlaceFromCode(placeCode);
-		setDurationInMinute(durationInMinute);
+		setProductFromCode(productCode);
+		setWeightInKiloGram(weightInKiloGram);
 	}
 	
-	public AgreementArrivalPlace setAgreementFromCode(String code) {
+	public AgreementProduct setAgreementFromCode(String code) {
 		if(StringHelper.isBlank(code))
 			this.agreement = null;
 		else
@@ -45,23 +45,23 @@ public class AgreementArrivalPlace extends AbstractIdentifiableSystemScalarStrin
 		return this;
 	}
 	
-	public AgreementArrivalPlace setPlaceFromCode(String code) {
+	public AgreementProduct setProductFromCode(String code) {
 		if(StringHelper.isBlank(code))
-			this.place = null;
+			this.product = null;
 		else
-			this.place = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
+			this.product = InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code);
 		return this;
 	}
 	
 	public static final String FIELD_AGREEMENT = "agreement";
-	public static final String FIELD_PLACE = "place";
-	public static final String FIELD_DURATION_IN_MINUTE = "durationInMinute";
+	public static final String FIELD_PRODUCT = "product";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
 	
 	public static final String COLUMN_AGREEMENT = Agreement.TABLE_NAME;
-	public static final String COLUMN_PLACE = Place.TABLE_NAME;
-	public static final String COLUMN_DURATION_IN_MINUTE = FIELD_DURATION_IN_MINUTE;
+	public static final String COLUMN_PRODUCT = Product.TABLE_NAME;
+	public static final String COLUMN_WEIGHT_IN_KILO_GRAM = FIELD_WEIGHT_IN_KILO_GRAM;
 	
-	public static final String TABLE_NAME = COLUMN_AGREEMENT+"arrival"+COLUMN_PLACE;
+	public static final String TABLE_NAME = COLUMN_AGREEMENT+COLUMN_PRODUCT;
 	
-	public static final String UNIQUE_CONSTRAINT_AGREEMENT_PLACE_NAME = COLUMN_AGREEMENT+COLUMN_PLACE;
+	public static final String UNIQUE_CONSTRAINT_AGREEMENT_PRODUCT_NAME = COLUMN_AGREEMENT+COLUMN_PRODUCT;
 }
