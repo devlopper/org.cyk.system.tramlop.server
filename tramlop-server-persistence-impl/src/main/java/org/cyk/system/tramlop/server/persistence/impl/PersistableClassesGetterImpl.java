@@ -7,8 +7,10 @@ import javax.enterprise.context.Dependent;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Customer;
+import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.Driver;
 import org.cyk.system.tramlop.server.persistence.entities.Place;
+import org.cyk.system.tramlop.server.persistence.entities.Product;
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.annotation.System;
 import org.cyk.utility.clazz.Classes;
@@ -23,6 +25,7 @@ public class PersistableClassesGetterImpl extends AbstractFunctionWithProperties
 	protected Classes __execute__() throws Exception {
 		Classes classes = __inject__(Classes.class);
 		
+		classes.add(Delivery.class);
 		classes.add(AgreementTruck.class);
 		classes.add(Agreement.class);
 		
@@ -30,6 +33,7 @@ public class PersistableClassesGetterImpl extends AbstractFunctionWithProperties
 		classes.add(Driver.class);
 		classes.add(Place.class);
 		classes.add(Truck.class);
+		classes.add(Product.class);
 		
 		return classes;
 	}

@@ -8,6 +8,8 @@ import org.cyk.utility.server.persistence.PersistenceEntity;
 
 public interface TruckPersistence extends PersistenceEntity<Truck> {
 
+	/* Agreement */
+	
 	Collection<Truck> readWhereAgreementClosedIsFalseExist(Properties properties);
 	
 	default Collection<Truck> readWhereAgreementClosedIsFalseExist() {
@@ -20,4 +22,29 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 		return readWhereAgreementClosedIsFalseDoesNotExist(null);
 	}
 	
+	/* Delivery */
+	
+	Collection<Truck> readWhereDeliveryClosedIsFalseExist(Properties properties);
+	
+	default Collection<Truck> readWhereDeliveryClosedIsFalseExist() {
+		return readWhereDeliveryClosedIsFalseExist(null);
+	}
+	
+	Collection<Truck> readWhereDeliveryClosedIsFalseDoesNotExist(Properties properties);
+	
+	default Collection<Truck> readWhereDeliveryClosedIsFalseDoesNotExist() {
+		return readWhereDeliveryClosedIsFalseDoesNotExist(null);
+	}
+	
+	Collection<Truck> readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist(Properties properties);
+	
+	default Collection<Truck> readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist() {
+		return readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist(null);
+	}
+	
+	Collection<Truck> readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist(Properties properties);
+	
+	default Collection<Truck> readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist() {
+		return readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist(null);
+	}
 }
