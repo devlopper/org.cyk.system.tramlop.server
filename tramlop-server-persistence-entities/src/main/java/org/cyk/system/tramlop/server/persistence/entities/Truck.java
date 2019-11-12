@@ -1,6 +1,7 @@
 package org.cyk.system.tramlop.server.persistence.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,10 +20,15 @@ public class Truck extends AbstractIdentifiableSystemScalarStringIdentifiableBus
 	private static final long serialVersionUID = 1L;
 
 	@Transient private Driver driver;
+	@Transient private Collection<Agreement> agreements;
 	
 	public Truck(String code) {
 		super(code);
 	}
 	
+	public static final String FIELD_DRIVER = "driver";
+	public static final String FIELD_AGREEMENTS = "agreements";
+	
 	public static final String TABLE_NAME = "truck";
+	
 }
