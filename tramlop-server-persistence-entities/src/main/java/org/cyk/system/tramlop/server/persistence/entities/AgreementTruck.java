@@ -20,6 +20,10 @@ uniqueConstraints= {
 public class AgreementTruck extends AbstractAgreementTruck implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	public AgreementTruck(Agreement agreement,Truck truck,Driver driver) {
+		super(agreement, truck, driver);
+	}
+	
 	public AgreementTruck(String agreementCode,String truckCode,String driverCode) {
 		super(agreementCode, truckCode, driverCode);
 	}

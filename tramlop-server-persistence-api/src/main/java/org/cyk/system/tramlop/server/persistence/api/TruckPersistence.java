@@ -8,7 +8,7 @@ import org.cyk.utility.server.persistence.PersistenceEntity;
 
 public interface TruckPersistence extends PersistenceEntity<Truck> {
 
-	/* Agreement */
+	/* get by agreement */
 	
 	Collection<Truck> readWhereAgreementClosedIsFalseExist(Properties properties);
 	
@@ -22,7 +22,7 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 		return readWhereAgreementClosedIsFalseDoesNotExist(null);
 	}
 	
-	/* Delivery */
+	/* get by delivery */
 	
 	Collection<Truck> readWhereDeliveryClosedIsFalseExist(Properties properties);
 	
@@ -47,4 +47,5 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 	default Collection<Truck> readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist() {
 		return readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist(null);
 	}
+	
 }

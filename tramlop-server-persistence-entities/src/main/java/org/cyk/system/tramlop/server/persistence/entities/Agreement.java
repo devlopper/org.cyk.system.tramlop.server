@@ -1,6 +1,8 @@
 package org.cyk.system.tramlop.server.persistence.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -8,8 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.cyk.utility.__kernel__.array.ArrayHelper;
+import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.instance.InstanceGetter;
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Existence;
@@ -29,6 +34,9 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DEPARTURE_PLACE) private Place departurePlace;
 	@Embedded private Existence existence;
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
+	
+	@Transient private Collection<Truck> trucks;
+	@Transient private Collection<Delivery> deliveries;
 	
 	public Agreement(String code,String customerCode,String departurePlaceCode,Boolean closed) {
 		super(code);
@@ -56,6 +64,34 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 			this.departurePlace = null;
 		else
 			this.departurePlace = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
+		return this;
+	}
+	
+	public Collection<Truck> getTrucks(Boolean injectIfNull) {
+		if(trucks == null && Boolean.TRUE.equals(injectIfNull))
+			trucks = new ArrayList<>();
+		return trucks;
+	}
+	
+	public Agreement addTrucksFromCodes(Collection<String> codes) {
+		if(CollectionHelper.isEmpty(codes))
+			return this;
+		for(String code : codes)
+			getTrucks(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Truck.class, code));
+		return this;
+	}
+	
+	public Agreement addTrucksFromCodes(String...codes) {
+		if(ArrayHelper.isEmpty(codes))
+			return this;
+		addTrucksFromCodes(CollectionHelper.listOf(codes));
+		return this;
+	}
+	
+	public Agreement addTruck(String code,String driverCode) {
+		if(StringHelper.isBlank(code))
+			return this;
+		getTrucks(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Truck.class, code).setDriverFromCode(driverCode));
 		return this;
 	}
 	

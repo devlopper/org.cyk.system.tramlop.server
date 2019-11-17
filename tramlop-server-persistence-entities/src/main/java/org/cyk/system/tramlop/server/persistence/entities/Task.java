@@ -32,11 +32,12 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	
 	public static final String TABLE_NAME = "task";
 	
-	public static final String CODE_PESE_VIDE = "PESEE_A_VIDE";
+	public static final String CODE_PESE_VIDE_AVANT_CHARGE = "PESEE_A_VIDE_AVANT_CHARGE";
 	public static final String CODE_CHARGE = "CHARGE";
 	public static final String CODE_PESE_CHARGE = "PESEE_APRES_CHARGE";
 	public static final String CODE_DEPART = "DEPART";
 	public static final String CODE_ARRIVEE = "ARRIVEE";
 	public static final String CODE_PESE_DECHARGE = "PESEE_AVANT_DECHARGE";
 	public static final String CODE_DECHARGE = "DECHARGE";
+	public static final String CODE_PESE_VIDE_APRES_DECHARGE = "PESEE_A_VIDE_APRES_DECHARGE";
 }

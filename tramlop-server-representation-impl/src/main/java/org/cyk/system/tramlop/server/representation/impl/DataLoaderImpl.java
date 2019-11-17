@@ -48,9 +48,9 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 	protected Response __execute__() throws Exception {
 		__inject__(IncidentTypeBusiness.class).createMany(List.of(new IncidentType(IncidentType.CODE_UNKNOWN,"Inconnu")));
 		
-		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE,"Peser à vide",1),new Task(Task.CODE_CHARGE,"Charger",2)
+		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2)
 				,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
-				,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7)));
+				,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7),new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8)));
 		
 		__inject__(ProductBusiness.class).createMany(List.of(new Product("SABLE","Sable",new BigDecimal("0.05")),new Product("GRAVIER","Gravier",new BigDecimal("0.01"))));
 		
@@ -75,7 +75,7 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 		
 		__inject__(DeliveryBusiness.class).createMany(List.of(new Delivery("l01","c01","SABLE","0101AA01","d01",Boolean.FALSE)));
 		
-		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0101","l01",Task.CODE_PESE_VIDE)));
+		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0101","l01",Task.CODE_PESE_VIDE_AVANT_CHARGE)));
 		__inject__(WeighingBusiness.class).createMany(List.of(new Weighing("dtl0101",5000)));
 		
 		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0102","l01",Task.CODE_CHARGE)));
@@ -91,6 +91,8 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 		__inject__(WeighingBusiness.class).createMany(List.of(new Weighing("dtl0106",6000)));
 		
 		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0107","l01",Task.CODE_DECHARGE)));
+		
+		__inject__(DeliveryTaskBusiness.class).createMany(List.of(new DeliveryTask("dtl0108","l01",Task.CODE_PESE_VIDE_APRES_DECHARGE)));
 		
 		return Response.ok().build();
 	}

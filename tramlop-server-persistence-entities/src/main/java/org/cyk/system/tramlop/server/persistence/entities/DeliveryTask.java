@@ -34,6 +34,11 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 	@Embedded private Existence existence;
 	@Column(name=COLUMN_COMMENT) private String comment;
 	
+	public DeliveryTask(Delivery delivery,Task task) {
+		setDelivery(delivery);
+		setTask(task);
+	}
+	
 	public DeliveryTask(String identifier,String deliveryCode,String taskCode) {
 		setIdentifier(identifier);
 		setDeliveryFromCode(deliveryCode);

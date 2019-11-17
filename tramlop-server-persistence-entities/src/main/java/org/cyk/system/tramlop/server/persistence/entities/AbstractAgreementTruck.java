@@ -25,6 +25,12 @@ public class AbstractAgreementTruck extends AbstractIdentifiableSystemScalarStri
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_TRUCK) private Truck truck;
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DRIVER) private Driver driver;
 	
+	public AbstractAgreementTruck(Agreement agreement,Truck truck,Driver driver) {
+		setAgreement(agreement);
+		setTruck(truck);
+		setDriver(driver);
+	}
+	
 	public AbstractAgreementTruck(String agreementCode,String truckCode,String driverCode) {
 		setAgreementFromCode(agreementCode);
 		setTruckFromCode(truckCode);
