@@ -5,4 +5,6 @@ import org.cyk.utility.server.persistence.PersistenceEntity;
 
 public interface WeighingPersistence extends PersistenceEntity<Weighing> {
 
+	Weighing readByDeliveryCodeByTaskCode(String deliveryCode,String taskCode);
+	
 }

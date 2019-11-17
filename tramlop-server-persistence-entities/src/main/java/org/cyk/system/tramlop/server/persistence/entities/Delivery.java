@@ -45,6 +45,10 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 		setClosed(closed);
 	}
 	
+	public Delivery(String code,String agreementCode,String productCode,String truckCode,String driverCode) {
+		this(code, agreementCode, productCode, truckCode, driverCode, null);
+	}
+	
 	public Delivery setAgreementFromCode(String code) {
 		if(StringHelper.isBlank(code))
 			this.agreement = null;
@@ -95,6 +99,14 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 		if(ArrayHelper.isEmpty(codes))
 			return this;
 		addTasksFromCodes(CollectionHelper.listOf(codes));
+		return this;
+	}
+	
+	public Delivery addTaskFromCode(String code,Integer weightInKiloGram) {
+		if(StringHelper.isBlank(code))
+			return this;
+		addTasksFromCodes(CollectionHelper.listOf(code));
+		CollectionHelper.getLast(tasks).setWeightInKiloGram(weightInKiloGram);
 		return this;
 	}
 	

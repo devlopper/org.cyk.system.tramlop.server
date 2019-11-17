@@ -5,4 +5,6 @@ import org.cyk.utility.server.persistence.PersistenceEntity;
 
 public interface DeliveryTaskPersistence extends PersistenceEntity<DeliveryTask> {
 
+	DeliveryTask readByDeliveryCodeByTaskCode(String deliveryCode,String taskCode);
+	DeliveryTask readByDeliveryCodeByTaskOrderNumber(String deliveryCode,Integer taskOrderNumber);
 }

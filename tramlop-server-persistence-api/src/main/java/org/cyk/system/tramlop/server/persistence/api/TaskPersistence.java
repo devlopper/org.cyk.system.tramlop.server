@@ -5,4 +5,6 @@ import org.cyk.utility.server.persistence.PersistenceEntity;
 
 public interface TaskPersistence extends PersistenceEntity<Task> {
 
+	Task readByOrderNumber(Integer orderNumber);
+	
 }

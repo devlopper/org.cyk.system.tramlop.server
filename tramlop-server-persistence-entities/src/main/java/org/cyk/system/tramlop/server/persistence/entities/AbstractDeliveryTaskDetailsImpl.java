@@ -23,6 +23,10 @@ public abstract class AbstractDeliveryTaskDetailsImpl extends AbstractIdentifiab
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DELIVERY_TASK,unique = true) protected DeliveryTask deliveryTask;
 	
+	public AbstractDeliveryTaskDetailsImpl(DeliveryTask deliveryTask) {
+		setDeliveryTask(deliveryTask);
+	}
+	
 	public AbstractDeliveryTaskDetailsImpl(String deliveryTaskIdentifier) {
 		setDeliveryTaskFromIdentifier(deliveryTaskIdentifier);
 	}

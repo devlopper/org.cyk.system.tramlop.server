@@ -1,10 +1,12 @@
 package org.cyk.system.tramlop.server.persistence.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl;
@@ -21,12 +23,17 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 
 	@NotNull @Column(name = COLUMN_ORDER_NUMBER,unique = true) private Integer orderNumber;
 	
+	@Transient private Collection<Delivery> deliveries;
+	@Transient private Weighing weighing;
+	@Transient private Integer weightInKiloGram;
+	
 	public Task(String code,String name,Integer orderNumber) {
 		super(code,name);
 		setOrderNumber(orderNumber);
 	}
 	
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
+	public static final String FIELD_DELIVERIES = "deliveries";
 	
 	public static final String COLUMN_ORDER_NUMBER = FIELD_ORDER_NUMBER;
 	

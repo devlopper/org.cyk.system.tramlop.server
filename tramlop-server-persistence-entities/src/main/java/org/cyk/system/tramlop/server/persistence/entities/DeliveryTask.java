@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
@@ -34,9 +35,16 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 	@Embedded private Existence existence;
 	@Column(name=COLUMN_COMMENT) private String comment;
 	
-	public DeliveryTask(Delivery delivery,Task task) {
+	@Transient private Integer weightInKiloGram;
+	
+	public DeliveryTask(Delivery delivery,Task task,Integer weightInKiloGram) {
 		setDelivery(delivery);
 		setTask(task);
+		setWeightInKiloGram(weightInKiloGram);
+	}
+	
+	public DeliveryTask(Delivery delivery,Task task) {
+		this(delivery,task,null);
 	}
 	
 	public DeliveryTask(String identifier,String deliveryCode,String taskCode) {

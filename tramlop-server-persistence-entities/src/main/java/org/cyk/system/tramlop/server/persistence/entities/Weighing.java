@@ -19,6 +19,11 @@ public class Weighing extends AbstractDeliveryTaskDetailsImpl implements Seriali
 
 	@NotNull @Column(name=COLUMN_WEIGHT_IN_KILO_GRAM) private Integer weightInKiloGram;
 	
+	public Weighing(DeliveryTask deliveryTask,Integer weightInKiloGram) {
+		super(deliveryTask);
+		setWeightInKiloGram(weightInKiloGram);
+	}
+	
 	public Weighing(String deliveryTaskIdentifier,Integer weightInKiloGram) {
 		super(deliveryTaskIdentifier);
 		setWeightInKiloGram(weightInKiloGram);
