@@ -25,15 +25,18 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 		if(deliveryTask.getTask().getOrderNumber() > 1) {
 			Task previousTask = __inject__(TaskPersistence.class).readByOrderNumber(deliveryTask.getTask().getOrderNumber() - 1);
 			if(__persistence__.readByDeliveryCodeByTaskOrderNumber(deliveryTask.getDelivery().getCode(), previousTask.getOrderNumber()) == null)
-				;//throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire.");
+				throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire.");
 		}
 	}
 	
 	@Override
 	protected void __listenExecuteCreateAfter__(DeliveryTask deliveryTask, Properties properties,BusinessFunctionCreator function) {
 		super.__listenExecuteCreateAfter__(deliveryTask, properties, function);
-		if(deliveryTask.getWeightInKiloGram() != null && deliveryTask.getTask().getCode().contains("PESEE"))
+		if(Boolean.TRUE.equals(deliveryTask.getTask().getWeighable())) {
+			if(deliveryTask.getWeightInKiloGram() == null)
+				throw new RuntimeException(deliveryTask.getTask().getCode()+" : weight is required");
 			__inject__(WeighingBusiness.class).create(new Weighing(deliveryTask,deliveryTask.getWeightInKiloGram()));
+		}
 		if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_PESE_CHARGE)) {
 			create(new DeliveryTask(null, deliveryTask.getDelivery().getCode(), Task.CODE_DEPART));
 		}else if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_ARRIVEE)) {

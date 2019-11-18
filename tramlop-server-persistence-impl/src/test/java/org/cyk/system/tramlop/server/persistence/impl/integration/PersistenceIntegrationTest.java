@@ -32,6 +32,7 @@ import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Contact;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Person;
+import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.persistence.test.arquillian.AbstractPersistenceArquillianIntegrationTestWithDefaultDeployment;
 import org.junit.Test;
@@ -39,64 +40,63 @@ import org.junit.Test;
 public class PersistenceIntegrationTest extends AbstractPersistenceArquillianIntegrationTestWithDefaultDeployment {
 	private static final long serialVersionUID = 1L;
 	
+	@Override
+	protected void __listenBefore__() {
+		super.__listenBefore__();
+		createDataBaseForReadTruckQueries();		
+	}
+	
 	@Test
-	public void readTrucksByAgreementsCodes_a1() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByAgreementsCodes_a1() {
 		Collection<Truck> trucks = ((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes("a1");
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t5");
 	}
 	
 	@Test
-	public void readTrucksByAgreementsCodes_a2() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByAgreementsCodes_a2() {
 		Collection<Truck> trucks = ((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes("a2");
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t6","t7","t8","t9","t10");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_VIDE_AVANT_CHARGE() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByTasksCodes_CODE_PESE_VIDE_AVANT_CHARGE() {
 		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_VIDE_AVANT_CHARGE);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t6","t7","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_CHARGE() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByTasksCodes_CODE_CHARGE() {
 		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_CHARGE);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t2","t3","t4","t7","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_CHARGE() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByTasksCodes_CODE_PESE_CHARGE() {
 		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_CHARGE);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t3","t4","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_DECHARGE() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTrucksByTasksCodes_CODE_PESE_DECHARGE() {
 		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_DECHARGE);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t4","t9");
 	}
 	
 	@Test
-	public void readTruckWhereAgreementClosedIsFalseExist() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereAgreementClosedIsFalseExist() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t5","t6","t7","t8","t9","t10");
 	}
 	/*
 	@Test
-	public void readTruckWhereAgreementClosedIsFalseDoesNotExist() throws Exception{
+	public void readTruckWhereAgreementClosedIsFalseDoesNotExist() {
 		createDataBaseForReadTruckQueries();
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseDoesNotExist();
 		assertThat(trucks).isNotEmpty();
@@ -104,40 +104,42 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	*/
 	@Test
-	public void readWhereDeliveryClosedIsFalseExist() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereDeliveryClosedIsFalseExist() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereDeliveryClosedIsFalseExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t6","t7","t8","t9");
 	}
 	
 	@Test
-	public void readWhereDeliveryClosedIsFalseDoesNotExist() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereDeliveryClosedIsFalseDoesNotExist() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereDeliveryClosedIsFalseDoesNotExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t5","t10","t11","t12");
 	}
 	
 	@Test
-	public void readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t6","t7","t8","t9");
 	}
 	
 	@Test
-	public void readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t5","t10");
 	}
 	
 	@Test
-	public void readWhereTaskCodeIs_pese_vide() throws Exception{
-		createDataBaseForReadTruckQueries();
+	public void readTruckWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist_usingRead() {
+		Collection<Truck> trucks = __inject__(TruckPersistence.class).read(new Properties().setQueryIdentifier(TruckPersistence.READ_WHERE_AGREEMENT_CLOSED_IS_FALSE_EXIST_AND_DELIVERY_CLOSED_IS_FALSE_DOES_NOT_EXIST));
+		assertThat(trucks).isNotEmpty();
+		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t5","t10");
+	}
+	
+	@Test
+	public void readTruckWhereTaskCodeIs_pese_vide() {
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist();
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t5","t10");
@@ -145,26 +147,30 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	
 	/**/
 	
-	private void createDataBaseForReadTruckQueries() throws Exception{
-		userTransaction.begin();
-		__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2)
-				,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
-				,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7),new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8)));
-		__inject__(ProductPersistence.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
-		Integer numberOfTrucks = 10;
-		for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
-			__inject__(TruckPersistence.class).create(new Truck("t"+index));
-			__inject__(DriverPersistence.class).create(new Driver("d"+index, new Person("a", "a", "a", new Contact())));
+	private void createDataBaseForReadTruckQueries() {
+		try {
+			userTransaction.begin();
+			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2)
+					,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
+					,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7),new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8)));
+			__inject__(ProductPersistence.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
+			Integer numberOfTrucks = 10;
+			for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
+				__inject__(TruckPersistence.class).create(new Truck("t"+index));
+				__inject__(DriverPersistence.class).create(new Driver("d"+index, new Person("a", "a", "a", new Contact())));
+			}
+			__inject__(TruckPersistence.class).create(new Truck("t11"));
+			__inject__(TruckPersistence.class).create(new Truck("t12"));
+			__inject__(CustomerPersistence.class).create(new Customer("c01", new Person("a", "a", "a", new Contact())));
+			__inject__(PlacePersistence.class).create(new Place("p01", "Place", null, null));
+			
+			createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
+			createAgreement("a2", "c01", "p01", Boolean.FALSE,5);
+			
+			userTransaction.commit();
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
-		__inject__(TruckPersistence.class).create(new Truck("t11"));
-		__inject__(TruckPersistence.class).create(new Truck("t12"));
-		__inject__(CustomerPersistence.class).create(new Customer("c01", new Person("a", "a", "a", new Contact())));
-		__inject__(PlacePersistence.class).create(new Place("p01", "Place", null, null));
-		
-		createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
-		createAgreement("a2", "c01", "p01", Boolean.FALSE,5);
-		
-		userTransaction.commit();
 	}
 	
 	private void createDeliveryTasks(String deliveryCode,Collection<String> tasksCodes) {

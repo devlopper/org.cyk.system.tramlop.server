@@ -22,20 +22,28 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @Column(name = COLUMN_ORDER_NUMBER,unique = true) private Integer orderNumber;
+	@NotNull @Column(name = COLUMN_WEIGHABLE) private Boolean weighable;
 	
 	@Transient private Collection<Delivery> deliveries;
 	@Transient private Weighing weighing;
 	@Transient private Integer weightInKiloGram;
 	
-	public Task(String code,String name,Integer orderNumber) {
+	public Task(String code,String name,Integer orderNumber,Boolean weighable) {
 		super(code,name);
 		setOrderNumber(orderNumber);
+		setWeighable(weighable);
+	}
+	
+	public Task(String code,String name,Integer orderNumber) {
+		this(code, name, orderNumber, Boolean.FALSE);
 	}
 	
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
+	public static final String FIELD_WEIGHABLE = "weighable";
 	public static final String FIELD_DELIVERIES = "deliveries";
 	
 	public static final String COLUMN_ORDER_NUMBER = FIELD_ORDER_NUMBER;
+	public static final String COLUMN_WEIGHABLE = FIELD_WEIGHABLE;
 	
 	public static final String TABLE_NAME = "task";
 	

@@ -3,6 +3,7 @@ package org.cyk.system.tramlop.server.persistence.api;
 import java.util.Collection;
 
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
+import org.cyk.utility.__kernel__.persistence.QueryIdentifierBuilder;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.PersistenceEntity;
 
@@ -48,4 +49,9 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 		return readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist(null);
 	}
 	
+	/**/
+	
+	String READ_WHERE_AGREEMENT_CLOSED_IS_FALSE_EXIST_AND_DELIVERY_CLOSED_IS_FALSE_DOES_NOT_EXIST 
+		= QueryIdentifierBuilder.getInstance().build(Truck.class,"readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist");
+
 }

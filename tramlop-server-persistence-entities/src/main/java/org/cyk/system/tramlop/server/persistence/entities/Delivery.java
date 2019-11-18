@@ -110,6 +110,20 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 		return this;
 	}
 	
+	public Delivery addTasks(Collection<Task> tasks) {
+		if(CollectionHelper.isEmpty(tasks))
+			return this;
+		getTasks(Boolean.TRUE).addAll(tasks);
+		return this;
+	}
+	
+	public Delivery addTasks(Task...tasks) {
+		if(ArrayHelper.isEmpty(tasks))
+			return this;
+		addTasks(CollectionHelper.listOf(tasks));
+		return this;
+	}
+	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_TRUCK = "truck";
