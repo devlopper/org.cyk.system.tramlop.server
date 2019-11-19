@@ -1,6 +1,7 @@
 package org.cyk.system.tramlop.server.representation.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.cyk.utility.__kernel__.object.__static__.representation.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
 
@@ -18,6 +19,7 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private DriverDto driver;
 	private Boolean closed;
 	private Integer weightInKiloGram;
+	private ArrayList<TaskDto> tasks;
 	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_PRODUCT = "product";

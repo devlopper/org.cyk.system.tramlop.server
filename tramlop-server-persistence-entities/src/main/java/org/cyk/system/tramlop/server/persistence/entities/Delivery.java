@@ -29,25 +29,24 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_AGREEMENT) private Agreement agreement;
-	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PRODUCT) private Product product;
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_TRUCK) private Truck truck;
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DRIVER) private Driver driver;
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
 	
+	@Transient private Product product;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Collection<Task> tasks;
 	
-	public Delivery(String code,String agreementCode,String productCode,String truckCode,String driverCode,Boolean closed) {
+	public Delivery(String code,String agreementCode,String truckCode,String driverCode,Boolean closed) {
 		super(code);
 		setAgreementFromCode(agreementCode);
-		setProductFromCode(productCode);
 		setTruckFromCode(truckCode);
 		setDriverFromCode(driverCode);
 		setClosed(closed);
 	}
 	
-	public Delivery(String code,String agreementCode,String productCode,String truckCode,String driverCode) {
-		this(code, agreementCode, productCode, truckCode, driverCode, null);
+	public Delivery(String code,String agreementCode,String truckCode,String driverCode) {
+		this(code, agreementCode, truckCode, driverCode, null);
 	}
 	
 	public Delivery setAgreementFromCode(String code) {
@@ -55,14 +54,6 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 			this.agreement = null;
 		else
 			this.agreement = InstanceGetter.getInstance().getByBusinessIdentifier(Agreement.class, code);
-		return this;
-	}
-	
-	public Delivery setProductFromCode(String code) {
-		if(StringHelper.isBlank(code))
-			this.product = null;
-		else
-			this.product = InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code);
 		return this;
 	}
 	
@@ -125,14 +116,21 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 		return this;
 	}
 	
+	public Delivery setProductFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.product = null;
+		else
+			this.product = InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code);
+		return this;
+	}
+	
 	public static final String FIELD_AGREEMENT = "agreement";
-	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_TRUCK = "truck";
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_CLOSED = "closed";
+	public static final String FIELD_PRODUCT = "product";
 	
 	public static final String COLUMN_AGREEMENT = Agreement.TABLE_NAME;
-	public static final String COLUMN_PRODUCT = Product.TABLE_NAME;
 	public static final String COLUMN_TRUCK = Truck.TABLE_NAME;
 	public static final String COLUMN_DRIVER = Driver.TABLE_NAME;
 	public static final String COLUMN_CLOSED = FIELD_CLOSED;

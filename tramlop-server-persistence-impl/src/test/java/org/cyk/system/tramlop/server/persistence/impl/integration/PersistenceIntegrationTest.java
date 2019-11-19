@@ -61,6 +61,19 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	
 	@Test
+	public void readAgreement_WhereAgreementClosedIsFalseExistByTrucksCodes_t1() {
+		Collection<Agreement> agreements = __inject__(AgreementPersistence.class).readWhereAgreementClosedIsFalseExistByTrucksCodes("t1");
+		assertThat(agreements).isNotEmpty();
+		assertThat(agreements.stream().map(Agreement::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("a1");
+	}
+	
+	@Test
+	public void readAgreement_WhereAgreementClosedIsFalseExistByTrucksCodes_t11() {
+		Collection<Agreement> agreements = __inject__(AgreementPersistence.class).readWhereAgreementClosedIsFalseExistByTrucksCodes("t11");
+		assertThat(agreements).isEmpty();
+	}
+	
+	@Test
 	public void readTrucksByTasksCodes_CODE_PESE_VIDE_AVANT_CHARGE() {
 		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_VIDE_AVANT_CHARGE);
 		assertThat(trucks).isNotEmpty();
@@ -150,7 +163,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	private void createDataBaseForReadTruckQueries() {
 		try {
 			userTransaction.begin();
-			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2)
+			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2,Boolean.FALSE,Boolean.TRUE)
 					,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
 					,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7),new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8)));
 			__inject__(ProductPersistence.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
@@ -188,7 +201,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	*/
 	private void createDelivery(String agreementCode,String productCode,String deliveryCode,String truckCode,String driverCode,Boolean closed,Collection<String> tasksCodes) {
-		__inject__(DeliveryPersistence.class).create(new Delivery(deliveryCode, agreementCode, productCode,truckCode,driverCode,closed));
+		__inject__(DeliveryPersistence.class).create(new Delivery(deliveryCode, agreementCode,truckCode,driverCode,closed));
 		createDeliveryTasks(deliveryCode, tasksCodes);
 	}
 	

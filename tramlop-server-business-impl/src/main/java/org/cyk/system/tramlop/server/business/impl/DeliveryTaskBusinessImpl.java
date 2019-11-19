@@ -5,10 +5,12 @@ import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.cyk.system.tramlop.server.business.api.DeliveryTaskBusiness;
+import org.cyk.system.tramlop.server.business.api.LoadingBusiness;
 import org.cyk.system.tramlop.server.business.api.WeighingBusiness;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
+import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Weighing;
 import org.cyk.utility.__kernel__.properties.Properties;
@@ -37,6 +39,13 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 				throw new RuntimeException(deliveryTask.getTask().getCode()+" : weight is required");
 			__inject__(WeighingBusiness.class).create(new Weighing(deliveryTask,deliveryTask.getWeightInKiloGram()));
 		}
+		
+		if(Boolean.TRUE.equals(deliveryTask.getTask().getProductable())) {
+			if(deliveryTask.getProduct() == null)
+				throw new RuntimeException(deliveryTask.getTask().getCode()+" : product is required");
+			__inject__(LoadingBusiness.class).create(new Loading(deliveryTask,deliveryTask.getProduct()));
+		}
+		
 		if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_PESE_CHARGE)) {
 			create(new DeliveryTask(null, deliveryTask.getDelivery().getCode(), Task.CODE_DEPART));
 		}else if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_ARRIVEE)) {

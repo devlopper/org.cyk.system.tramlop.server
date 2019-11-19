@@ -29,6 +29,7 @@ import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Contact;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Person;
+import org.cyk.utility.__kernel__.random.RandomHelper;
 import org.cyk.utility.server.business.AbstractApplicationScopeLifeCycleListenerImplementation;
 
 @ApplicationScoped
@@ -47,18 +48,18 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 	
 	public static void createDataBase() throws Exception{
 		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1,Boolean.TRUE)
-				,new Task(Task.CODE_CHARGE,"Charger",2),new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3,Boolean.TRUE),new Task(Task.CODE_DEPART,"Départ",4)
+				,new Task(Task.CODE_CHARGE,"Charger",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3,Boolean.TRUE),new Task(Task.CODE_DEPART,"Départ",4)
 				,new Task(Task.CODE_ARRIVEE,"Arrivée",5),new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6,Boolean.TRUE),new Task(Task.CODE_DECHARGE,"Décharger",7)
 				,new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8,Boolean.TRUE)));
 		__inject__(ProductBusiness.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
 		Integer numberOfTrucks = 10;
 		for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
 			__inject__(TruckBusiness.class).create(new Truck("t"+index));
-			__inject__(DriverBusiness.class).create(new Driver("d"+index, new Person("a", "a", "a", new Contact())));
+			__inject__(DriverBusiness.class).create(new Driver("d"+index, new Person(RandomHelper.getFirstName(), RandomHelper.getMaleLastName(), "a", new Contact())));
 		}
 		__inject__(TruckBusiness.class).create(new Truck("t11"));
 		__inject__(TruckBusiness.class).create(new Truck("t12"));
-		__inject__(CustomerBusiness.class).create(new Customer("c01", new Person("a", "a", "a", new Contact())));
+		__inject__(CustomerBusiness.class).create(new Customer("c01", new Person(RandomHelper.getFirstName(), RandomHelper.getMaleLastName(), "a", new Contact())));
 		__inject__(PlaceBusiness.class).create(new Place("p01", "Place", null, null));
 		
 		createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
@@ -71,10 +72,12 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 				Task task = __inject__(TaskPersistence.class).readByBusinessIdentifier(taskCode);
 				if(Boolean.TRUE.equals(task.getWeighable()))
 					task.setWeightInKiloGram(1000);
+				if(Boolean.TRUE.equals(task.getProductable()))
+					task.setProductFromCode("p01");
 				if(task.getOrderNumber() == 1)
-					__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, agreementCode, productCode,truckCode,driverCode,closed).addTasks(task));
+					__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, agreementCode,truckCode,driverCode,closed).addTasks(task));
 				else
-					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000));
+					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01"));
 			}
 		}
 	}

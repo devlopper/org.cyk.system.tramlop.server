@@ -36,6 +36,7 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 	@Column(name=COLUMN_COMMENT) private String comment;
 	
 	@Transient private Integer weightInKiloGram;
+	@Transient private Product product;
 	
 	public DeliveryTask(Delivery delivery,Task task,Integer weightInKiloGram) {
 		setDelivery(delivery);
@@ -66,6 +67,14 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 			this.task = null;
 		else
 			this.task = InstanceGetter.getInstance().getByBusinessIdentifier(Task.class, code);
+		return this;
+	}
+	
+	public DeliveryTask setProductFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.product = null;
+		else
+			this.product = InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code);
 		return this;
 	}
 	

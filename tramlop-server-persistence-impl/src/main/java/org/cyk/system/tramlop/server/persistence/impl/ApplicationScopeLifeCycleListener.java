@@ -18,6 +18,7 @@ import org.cyk.system.tramlop.server.persistence.entities.Driver;
 import org.cyk.system.tramlop.server.persistence.entities.Incident;
 import org.cyk.system.tramlop.server.persistence.entities.IncidentResolution;
 import org.cyk.system.tramlop.server.persistence.entities.IncidentType;
+import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Path;
 import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
@@ -34,7 +35,7 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 	@Override
 	public void __initialize__(Object object) {
 		PersistableClassesGetter.COLLECTION.set(List.of(
-				IncidentResolution.class,Incident.class,Weighing.class,DeliveryTask.class,Delivery.class
+				IncidentResolution.class,Incident.class,Loading.class,Weighing.class,DeliveryTask.class,Delivery.class
 				,AgreementArrivalPlace.class,AgreementPath.class,AgreementProduct.class,AgreementTruck.class,AgreementTruckSecondaryDriver.class,Agreement.class
 				,Path.class,Customer.class,Driver.class,Place.class,Truck.class,Product.class,Task.class,IncidentType.class));
 		__inject__(org.cyk.utility.server.persistence.impl.ApplicationScopeLifeCycleListener.class).initialize(null);
