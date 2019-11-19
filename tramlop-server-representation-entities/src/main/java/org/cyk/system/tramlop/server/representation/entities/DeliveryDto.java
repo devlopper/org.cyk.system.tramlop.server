@@ -17,6 +17,7 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private TruckDto truck;
 	private DriverDto driver;
 	private Boolean closed;
+	private Integer weightInKiloGram;
 	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_PRODUCT = "product";

@@ -37,11 +37,11 @@ public class DeliveryBusinessImpl extends AbstractBusinessEntityImpl<Delivery, D
 		Collection<Task> tasks = delivery.getTasks();
 		if(CollectionHelper.isEmpty(tasks)) {
 			tasks = new ArrayList<>();
-			tasks.add(__inject__(TaskPersistence.class).readByOrderNumber(1));
+			tasks.add(__inject__(TaskPersistence.class).readByOrderNumber(1).setWeightInKiloGram(delivery.getWeightInKiloGram()));
 		}
 		Task taskPeseeAVideAvantCharge = CollectionHelper.getFirst(tasks.stream().filter(x -> x.getOrderNumber().equals(1)).collect(Collectors.toList()));
-		if(taskPeseeAVideAvantCharge == null || taskPeseeAVideAvantCharge.getWeightInKiloGram() == null)
-			throw new RuntimeException("Pesée à vide avant charge est obligatoire");					
+		if(taskPeseeAVideAvantCharge == null)
+			throw new RuntimeException("Pesée à vide avant charge est obligatoire");
 		__inject__(DeliveryTaskBusiness.class).createMany(tasks.stream().map(task -> new DeliveryTask(delivery,task,task.getWeightInKiloGram())).collect(Collectors.toList()));
 	
 	}

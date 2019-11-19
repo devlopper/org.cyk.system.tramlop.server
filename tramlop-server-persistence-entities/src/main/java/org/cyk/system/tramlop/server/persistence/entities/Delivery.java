@@ -34,6 +34,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DRIVER) private Driver driver;
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
 	
+	@Transient private Integer weightInKiloGram;
 	@Transient private Collection<Task> tasks;
 	
 	public Delivery(String code,String agreementCode,String productCode,String truckCode,String driverCode,Boolean closed) {

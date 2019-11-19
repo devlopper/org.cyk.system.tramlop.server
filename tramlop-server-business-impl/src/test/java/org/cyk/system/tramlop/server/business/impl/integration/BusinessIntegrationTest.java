@@ -139,7 +139,7 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	public void delivery_weightBeforeLoad(){
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1", "p01","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1", "p01","t1", "d1").setWeightInKiloGram(weight));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
