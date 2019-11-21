@@ -37,6 +37,7 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 	
 	@Transient private Integer weightInKiloGram;
 	@Transient private Product product;
+	@Transient private Place unloadingPlace;
 	
 	public DeliveryTask(Delivery delivery,Task task,Integer weightInKiloGram) {
 		setDelivery(delivery);
@@ -75,6 +76,14 @@ public class DeliveryTask extends AbstractIdentifiableSystemScalarStringImpl imp
 			this.product = null;
 		else
 			this.product = InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code);
+		return this;
+	}
+	
+	public DeliveryTask setUnloadingPlaceFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.unloadingPlace = null;
+		else
+			this.unloadingPlace = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
 		return this;
 	}
 	

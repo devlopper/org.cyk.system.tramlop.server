@@ -158,6 +158,50 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t5","t10");
 	}
 	
+	@Test
+	public void readDeliveryTransientFields_d1_tasks() {
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNotEmpty();
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d1_tasksExistence() {
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS+"."+Task.FIELD_EXISTENCE));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNotEmpty();
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d1_taksWeightInKiloGram() {
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS+"."+Delivery.FIELD_WEIGHT_IN_KILO_GRAM));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNotNull();
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d2_tasks() {
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d2");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d2",new Properties().setFields(Delivery.FIELD_TASKS));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getTasks()).isNotEmpty();
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
+	}
+	
 	/**/
 	
 	private void createDataBaseForReadTruckQueries() {

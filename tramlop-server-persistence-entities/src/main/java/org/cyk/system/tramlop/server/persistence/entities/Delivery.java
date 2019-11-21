@@ -129,6 +129,8 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_CLOSED = "closed";
 	public static final String FIELD_PRODUCT = "product";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
+	public static final String FIELD_TASKS = "tasks";
 	
 	public static final String COLUMN_AGREEMENT = Agreement.TABLE_NAME;
 	public static final String COLUMN_TRUCK = Truck.TABLE_NAME;

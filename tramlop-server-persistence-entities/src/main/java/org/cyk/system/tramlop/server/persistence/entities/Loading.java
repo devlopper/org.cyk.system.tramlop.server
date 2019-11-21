@@ -22,15 +22,18 @@ public class Loading extends AbstractDeliveryTaskDetailsImpl implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PRODUCT) private Product product;
+	@NotNull @ManyToOne @JoinColumn(name = COLUMN_UNLOADING_PLACE) private Place unloadingPlace;
 	
-	public Loading(DeliveryTask deliveryTask,Product product) {
+	public Loading(DeliveryTask deliveryTask,Product product,Place unloadingPlace) {
 		super(deliveryTask);
 		setProduct(product);
+		setUnloadingPlace(unloadingPlace);
 	}
 	
-	public Loading(String deliveryTaskIdentifier,String productCode) {
+	public Loading(String deliveryTaskIdentifier,String productCode,String unloadingPlaceCode) {
 		super(deliveryTaskIdentifier);
 		setProductFromCode(productCode);
+		setUnloadingPlaceFromCode(unloadingPlaceCode);
 	}
 	
 	public Loading setProductFromCode(String code) {
@@ -41,11 +44,21 @@ public class Loading extends AbstractDeliveryTaskDetailsImpl implements Serializ
 		return this;
 	}
 	
+	public Loading setUnloadingPlaceFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.unloadingPlace = null;
+		else
+			this.unloadingPlace = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
+		return this;
+	}
+	
 	/**/
 	
 	public static final String FIELD_PRODUCT = "product";
+	public static final String FIELD_UNLOADING_PLACE = "unloadingPlace";
 	
 	public static final String COLUMN_PRODUCT = Product.TABLE_NAME;
+	public static final String COLUMN_UNLOADING_PLACE = "unloading"+Place.TABLE_NAME;
 	
 	public static final String TABLE_NAME = "loading";
 }

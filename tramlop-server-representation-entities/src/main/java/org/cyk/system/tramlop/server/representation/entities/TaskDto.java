@@ -13,6 +13,9 @@ import lombok.experimental.Accessors;
 public class TaskDto extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private WeighingDto weighing;
+	private ProductDto product;
+	private PlaceDto unloadingPlace;
 	private Integer orderNumber;
 	private Integer weightInKiloGram;
 	private ExistenceDto existence;

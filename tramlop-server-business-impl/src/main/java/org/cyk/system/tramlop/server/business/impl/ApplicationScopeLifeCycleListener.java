@@ -73,11 +73,11 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 				if(Boolean.TRUE.equals(task.getWeighable()))
 					task.setWeightInKiloGram(1000);
 				if(Boolean.TRUE.equals(task.getProductable()))
-					task.setProductFromCode("p01");
+					task.setProductFromCode("p01").setUnloadingPlaceFromCode("p01");
 				if(task.getOrderNumber() == 1)
 					__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, agreementCode,truckCode,driverCode,closed).addTasks(task));
 				else
-					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01"));
+					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
 			}
 		}
 	}

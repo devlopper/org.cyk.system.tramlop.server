@@ -32,6 +32,7 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	@Transient private Weighing weighing;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Product product;
+	@Transient private Place unloadingPlace;
 	@Transient private Existence existence;
 	
 	public Task(String code,String name,Integer orderNumber,Boolean weighable,Boolean productable) {
@@ -57,11 +58,22 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 		return this;
 	}
 	
+	public Task setUnloadingPlaceFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.unloadingPlace = null;
+		else
+			this.unloadingPlace = InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code);
+		return this;
+	}
+	
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
 	public static final String FIELD_WEIGHABLE = "weighable";
 	public static final String FIELD_PRODUCTABLE = "productable";
+	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_DELIVERIES = "deliveries";
 	public static final String FIELD_EXISTENCE = "existence";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
+	public static final String FIELD_UNLOADING_PLACE = "unloadingPlace";
 	
 	public static final String COLUMN_ORDER_NUMBER = FIELD_ORDER_NUMBER;
 	public static final String COLUMN_WEIGHABLE = FIELD_WEIGHABLE;

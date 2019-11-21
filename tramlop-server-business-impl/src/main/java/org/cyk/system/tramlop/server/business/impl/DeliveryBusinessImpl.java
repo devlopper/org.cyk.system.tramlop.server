@@ -48,7 +48,8 @@ public class DeliveryBusinessImpl extends AbstractBusinessEntityImpl<Delivery, D
 		Task taskPeseeAVideAvantCharge = CollectionHelper.getFirst(tasks.stream().filter(x -> x.getOrderNumber().equals(1)).collect(Collectors.toList()));
 		if(taskPeseeAVideAvantCharge == null)
 			throw new RuntimeException("La livraison doit commencer par la tache suivante : "+__inject__(TaskPersistence.class).readByOrderNumber(1).getName());
-		__inject__(DeliveryTaskBusiness.class).createMany(tasks.stream().map(task -> new DeliveryTask(delivery,task,task.getWeightInKiloGram()).setProduct(task.getProduct()))
+		__inject__(DeliveryTaskBusiness.class).createMany(tasks.stream().map(task -> new DeliveryTask(delivery,task,task.getWeightInKiloGram())
+				.setProduct(task.getProduct()).setUnloadingPlace(task.getUnloadingPlace()))
 				.collect(Collectors.toList()));
 	
 	}

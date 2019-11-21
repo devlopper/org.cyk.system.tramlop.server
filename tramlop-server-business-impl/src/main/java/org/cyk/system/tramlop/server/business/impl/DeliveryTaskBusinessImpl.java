@@ -1,6 +1,7 @@
 package org.cyk.system.tramlop.server.business.impl;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -13,6 +14,7 @@ import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Weighing;
+import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Existence;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.business.AbstractBusinessEntityImpl;
 import org.cyk.utility.server.business.BusinessFunctionCreator;
@@ -24,6 +26,7 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 	@Override
 	protected void __listenExecuteCreateBefore__(DeliveryTask deliveryTask, Properties properties,BusinessFunctionCreator function) {
 		super.__listenExecuteCreateBefore__(deliveryTask, properties, function);
+		deliveryTask.setExistence(new Existence().setCreationDate(LocalDateTime.now()));
 		if(deliveryTask.getTask().getOrderNumber() > 1) {
 			Task previousTask = __inject__(TaskPersistence.class).readByOrderNumber(deliveryTask.getTask().getOrderNumber() - 1);
 			if(__persistence__.readByDeliveryCodeByTaskOrderNumber(deliveryTask.getDelivery().getCode(), previousTask.getOrderNumber()) == null)
@@ -43,7 +46,9 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 		if(Boolean.TRUE.equals(deliveryTask.getTask().getProductable())) {
 			if(deliveryTask.getProduct() == null)
 				throw new RuntimeException(deliveryTask.getTask().getCode()+" : product is required");
-			__inject__(LoadingBusiness.class).create(new Loading(deliveryTask,deliveryTask.getProduct()));
+			if(deliveryTask.getUnloadingPlace() == null)
+				throw new RuntimeException(deliveryTask.getTask().getCode()+" : product unloading place is required");
+			__inject__(LoadingBusiness.class).create(new Loading(deliveryTask,deliveryTask.getProduct(),deliveryTask.getUnloadingPlace()));
 		}
 		
 		if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_PESE_CHARGE)) {
