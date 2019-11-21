@@ -26,12 +26,16 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 	@Override
 	protected void __listenExecuteCreateBefore__(DeliveryTask deliveryTask, Properties properties,BusinessFunctionCreator function) {
 		super.__listenExecuteCreateBefore__(deliveryTask, properties, function);
-		deliveryTask.setExistence(new Existence().setCreationDate(LocalDateTime.now()));
 		if(deliveryTask.getTask().getOrderNumber() > 1) {
 			Task previousTask = __inject__(TaskPersistence.class).readByOrderNumber(deliveryTask.getTask().getOrderNumber() - 1);
 			if(__persistence__.readByDeliveryCodeByTaskOrderNumber(deliveryTask.getDelivery().getCode(), previousTask.getOrderNumber()) == null)
 				throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire.");
 		}
+		
+		if(deliveryTask.getExistence() == null)
+			deliveryTask.setExistence(new Existence());
+		if(deliveryTask.getExistence().getCreationDate() == null)
+			deliveryTask.getExistence().setCreationDate(LocalDateTime.now());
 	}
 	
 	@Override
