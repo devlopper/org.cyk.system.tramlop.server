@@ -36,6 +36,8 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
 	
 	@Transient private Collection<Truck> trucks;
+	@Transient private Collection<Product> products;
+	@Transient private Collection<Place> arrivalPlaces;
 	@Transient private Collection<Delivery> deliveries;
 	
 	public Agreement(String code,String customerCode,String departurePlaceCode,Boolean closed) {
@@ -92,6 +94,62 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 		if(StringHelper.isBlank(code))
 			return this;
 		getTrucks(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Truck.class, code).setDriverFromCode(driverCode));
+		return this;
+	}
+	
+	public Collection<Product> getProducts(Boolean injectIfNull) {
+		if(products == null && Boolean.TRUE.equals(injectIfNull))
+			products = new ArrayList<>();
+		return products;
+	}
+	
+	public Agreement addProductsFromCodes(Collection<String> codes) {
+		if(CollectionHelper.isEmpty(codes))
+			return this;
+		for(String code : codes)
+			getProducts(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code));
+		return this;
+	}
+	
+	public Agreement addProductsFromCodes(String...codes) {
+		if(ArrayHelper.isEmpty(codes))
+			return this;
+		addProductsFromCodes(CollectionHelper.listOf(codes));
+		return this;
+	}
+	
+	public Agreement addProduct(String code,Integer weightInKiloGram) {
+		if(StringHelper.isBlank(code))
+			return this;
+		getProducts(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Product.class, code).setWeightInKiloGram(weightInKiloGram));
+		return this;
+	}
+	
+	public Collection<Place> getArrivalPlaces(Boolean injectIfNull) {
+		if(arrivalPlaces == null && Boolean.TRUE.equals(injectIfNull))
+			arrivalPlaces = new ArrayList<>();
+		return arrivalPlaces;
+	}
+	
+	public Agreement addArrivalPlacesFromCodes(Collection<String> codes) {
+		if(CollectionHelper.isEmpty(codes))
+			return this;
+		for(String code : codes)
+			getArrivalPlaces(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code));
+		return this;
+	}
+	
+	public Agreement addArrivalPlacesFromCodes(String...codes) {
+		if(ArrayHelper.isEmpty(codes))
+			return this;
+		addArrivalPlacesFromCodes(CollectionHelper.listOf(codes));
+		return this;
+	}
+	
+	public Agreement addArrivalPlace(String code,Integer durationInMinute) {
+		if(StringHelper.isBlank(code))
+			return this;
+		getArrivalPlaces(Boolean.TRUE).add(InstanceGetter.getInstance().getByBusinessIdentifier(Place.class, code).setDurationInMinute(durationInMinute));
 		return this;
 	}
 	

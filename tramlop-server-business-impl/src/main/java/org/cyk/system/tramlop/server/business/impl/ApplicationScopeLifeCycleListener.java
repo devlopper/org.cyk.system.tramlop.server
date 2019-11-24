@@ -46,7 +46,7 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 
 	/**/
 	
-	public static void createDataBase() throws Exception{
+	public static void createDataBase(Integer numberOfAgreements) throws Exception{
 		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1,Boolean.TRUE)
 				,new Task(Task.CODE_CHARGE,"Charger",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3,Boolean.TRUE),new Task(Task.CODE_DEPART,"Départ",4)
 				,new Task(Task.CODE_ARRIVEE,"Arrivée",5),new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6,Boolean.TRUE),new Task(Task.CODE_DECHARGE,"Décharger",7)
@@ -62,8 +62,14 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 		__inject__(CustomerBusiness.class).create(new Customer("c01", new Person(RandomHelper.getFirstName(), RandomHelper.getMaleLastName(), "a", new Contact())));
 		__inject__(PlaceBusiness.class).create(new Place("p01", "Place", null, null));
 		
-		createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
-		createAgreement("a2", "c01", "p01", Boolean.FALSE,5);
+		if(numberOfAgreements != null) {
+			createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
+			createAgreement("a2", "c01", "p01", Boolean.FALSE,5);	
+		}
+	}
+	
+	public static void createDataBase() throws Exception{
+		createDataBase(2);
 	}
 	
 	public static void createDelivery(String agreementCode,String productCode,String deliveryCode,String truckCode,String driverCode,Boolean closed,Collection<String> tasksCodes) {		

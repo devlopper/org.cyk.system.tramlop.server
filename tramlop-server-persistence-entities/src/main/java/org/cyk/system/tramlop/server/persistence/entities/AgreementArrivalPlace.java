@@ -31,6 +31,12 @@ public class AgreementArrivalPlace extends AbstractIdentifiableSystemScalarStrin
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_PLACE) private Place place;
 	@NotNull @Column(name = COLUMN_DURATION_IN_MINUTE) private Integer durationInMinute;
 	
+	public AgreementArrivalPlace(Agreement agreement,Place place,Integer durationInMinute) {
+		setAgreement(agreement);
+		setPlace(place);
+		setDurationInMinute(durationInMinute);
+	}
+	
 	public AgreementArrivalPlace(String agreementCode,String placeCode,Integer durationInMinute) {
 		setAgreementFromCode(agreementCode);
 		setPlaceFromCode(placeCode);

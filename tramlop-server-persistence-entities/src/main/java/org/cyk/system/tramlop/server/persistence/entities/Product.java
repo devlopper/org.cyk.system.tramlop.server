@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl;
@@ -21,6 +22,8 @@ public class Product extends AbstractIdentifiableSystemScalarStringIdentifiableB
 	private static final long serialVersionUID = 1L;
 
 	@NotNull @Column(name = COLUMN_LOSS_RATE) private BigDecimal lossRate;
+	
+	@Transient private Integer weightInKiloGram;
 	
 	public Product(String code,String name,BigDecimal lossRate) {
 		super(code,name);

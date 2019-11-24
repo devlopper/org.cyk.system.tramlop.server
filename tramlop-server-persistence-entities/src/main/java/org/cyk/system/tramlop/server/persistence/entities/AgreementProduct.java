@@ -37,6 +37,12 @@ public class AgreementProduct extends AbstractIdentifiableSystemScalarStringImpl
 		setWeightInKiloGram(weightInKiloGram);
 	}
 	
+	public AgreementProduct(Agreement agreement,Product product,Integer weightInKiloGram) {
+		setAgreement(agreement);
+		setProduct(product);
+		setWeightInKiloGram(weightInKiloGram);
+	}
+	
 	public AgreementProduct setAgreementFromCode(String code) {
 		if(StringHelper.isBlank(code))
 			this.agreement = null;
