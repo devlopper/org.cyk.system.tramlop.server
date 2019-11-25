@@ -158,6 +158,8 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	public static final String FIELD_EXISTENCE = "existence";
 	public static final String FIELD_CLOSED = "closed";
 	public static final String FIELD_TRUCKS = "trucks";
+	public static final String FIELD_PRODUCTS = "products";
+	public static final String FIELD_ARRIVAL_PLACES = "arrivalPlaces";
 	
 	public static final String COLUMN_CUSTOMER = Customer.TABLE_NAME;
 	public static final String COLUMN_DEPARTURE_PLACE = FIELD_DEPARTURE_PLACE;
