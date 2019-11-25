@@ -173,9 +173,10 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_weightBeforeLoad(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").setWeightInKiloGram(weight));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t11", "d1").setWeightInKiloGram(weight));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
@@ -186,9 +187,10 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_weightBeforeLoad_detectAgreement(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t1", "d1").setWeightInKiloGram(weight));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).setWeightInKiloGram(weight));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
@@ -199,10 +201,11 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_load(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));		
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
@@ -210,11 +213,12 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_weightAfterLoad(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE,Task.CODE_DEPART);
@@ -228,12 +232,13 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_unload(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_ARRIVEE).setWeightInKiloGram(140));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE
@@ -251,13 +256,14 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_weightAfterUnLoad(){
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		Integer weight = 15248;
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_ARRIVEE).setWeightInKiloGram(140));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, weight));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE

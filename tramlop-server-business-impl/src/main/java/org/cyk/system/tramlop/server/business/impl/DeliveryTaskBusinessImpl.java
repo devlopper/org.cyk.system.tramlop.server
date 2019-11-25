@@ -2,18 +2,22 @@ package org.cyk.system.tramlop.server.business.impl;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.cyk.system.tramlop.server.business.api.DeliveryTaskBusiness;
 import org.cyk.system.tramlop.server.business.api.LoadingBusiness;
 import org.cyk.system.tramlop.server.business.api.WeighingBusiness;
+import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
+import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Weighing;
+import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Existence;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.business.AbstractBusinessEntityImpl;
@@ -26,7 +30,11 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 	@Override
 	protected void __listenExecuteCreateBefore__(DeliveryTask deliveryTask, Properties properties,BusinessFunctionCreator function) {
 		super.__listenExecuteCreateBefore__(deliveryTask, properties, function);
-		if(deliveryTask.getTask().getOrderNumber() > 1) {
+		if(deliveryTask.getDelivery() == null && deliveryTask.getTruck() != null) {
+			Collection<Delivery> deliveries = __inject__(DeliveryPersistence.class).readWhereDeliveryClosedIsFalseExistByTrucksCodes(deliveryTask.getTruck().getCode());
+			deliveryTask.setDelivery(CollectionHelper.getFirst(deliveries));
+		}
+		if(deliveryTask.getTask() != null && deliveryTask.getTask().getOrderNumber() > 1) {
 			Task previousTask = __inject__(TaskPersistence.class).readByOrderNumber(deliveryTask.getTask().getOrderNumber() - 1);
 			if(__persistence__.readByDeliveryCodeByTaskOrderNumber(deliveryTask.getDelivery().getCode(), previousTask.getOrderNumber()) == null)
 				throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire.");

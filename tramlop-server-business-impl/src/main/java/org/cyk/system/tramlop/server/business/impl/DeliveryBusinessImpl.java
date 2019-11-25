@@ -10,8 +10,10 @@ import javax.enterprise.context.ApplicationScoped;
 import org.cyk.system.tramlop.server.business.api.DeliveryBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryTaskBusiness;
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
@@ -35,6 +37,11 @@ public class DeliveryBusinessImpl extends AbstractBusinessEntityImpl<Delivery, D
 			delivery.setClosed(Boolean.FALSE);
 		if(delivery.getAgreement() == null && delivery.getTruck() != null)
 			delivery.setAgreement(CollectionHelper.getFirst(__inject__(AgreementPersistence.class).readWhereAgreementClosedIsFalseExistByTrucksCodes(delivery.getTruck().getCode())));
+		if(delivery.getDriver() == null && delivery.getAgreement() != null && delivery.getTruck() != null) {
+			AgreementTruck agreementTruck = __inject__(AgreementTruckPersistence.class).readByAgreementByTruck(delivery.getAgreement(), delivery.getTruck());
+			if(agreementTruck != null)
+				delivery.setDriver(agreementTruck.getDriver());
+		}
 	}
 	
 	@Override

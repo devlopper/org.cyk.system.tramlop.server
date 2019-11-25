@@ -19,11 +19,42 @@ import org.cyk.system.tramlop.server.persistence.entities.Weighing;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
+import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Delivery> implements DeliveryPersistence,Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT = "SELECT delivery FROM Delivery delivery WHERE delivery.closed = %s AND "
+			+ " delivery.truck.code IN :trucksCodes";
+	
+	
+	private String readWhereDeliveryClosedIsFalseExistByTrucksCodes;
+	
+	@Override
+	protected void __listenPostConstructPersistenceQueries__() {
+		super.__listenPostConstructPersistenceQueries__();
+		addQueryCollectInstances(readWhereDeliveryClosedIsFalseExistByTrucksCodes, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT, "false"));
+	}
+	
+	@Override
+	public Collection<Delivery> readWhereDeliveryClosedIsFalseExistByTrucksCodes(Collection<String> trucksCodes,Properties properties) {
+		if(CollectionHelper.isEmpty(trucksCodes))
+			return null;
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readWhereDeliveryClosedIsFalseExistByTrucksCodes);
+		return __readMany__(properties, ____getQueryParameters____(properties,trucksCodes));
+	}
+	
+	@Override
+	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readWhereDeliveryClosedIsFalseExistByTrucksCodes)) {
+			return new Object[]{"trucksCodes",objects[0]};
+		}
+		return super.__getQueryParameters__(queryContext, properties, objects);
+	}
+	
 	@Override
 	protected void __listenExecuteReadAfterSetFieldValue__(Delivery delivery, Field field, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldValue__(delivery, field, properties);

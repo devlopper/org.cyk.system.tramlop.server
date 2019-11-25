@@ -17,6 +17,10 @@ public class DeliveryTaskDto extends AbstractIdentifiableSystemScalarStringImpl 
 	private TaskDto task;
 	private ExistenceDto existence;
 	private String comment;
+	private Integer weightInKiloGram;
+	private ProductDto product;
+	private PlaceDto unloadingPlace;
+	private DriverDto driver;
 	
 	public ExistenceDto getExistence(Boolean injectIfNull) {
 		if(existence == null && Boolean.TRUE.equals(injectIfNull))
