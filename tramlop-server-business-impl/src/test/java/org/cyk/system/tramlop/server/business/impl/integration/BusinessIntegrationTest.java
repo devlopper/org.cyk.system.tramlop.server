@@ -284,12 +284,13 @@ public class BusinessIntegrationTest extends AbstractBusinessArquillianIntegrati
 	
 	@Test
 	public void delivery_readTransientFields_tasks() {
+		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
-		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, "a1","t1", "d1").addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, 255));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_CHARGE).setWeightInKiloGram(500));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_ARRIVEE).setWeightInKiloGram(490));
-		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(255));
+		__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, null,"t11", null).addTaskFromCode(Task.CODE_PESE_VIDE_AVANT_CHARGE, 1000));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
+		__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
 		
 		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier(deliveryCode);
 		assertThat(delivery).isNotNull();

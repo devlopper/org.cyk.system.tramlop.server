@@ -50,6 +50,11 @@ public class AgreementDto extends AbstractIdentifiableSystemScalarStringIdentifi
 	}
 	
 	@Override
+	public AgreementDto setIdentifier(String identifier) {
+		return (AgreementDto) super.setIdentifier(identifier);
+	}
+	
+	@Override
 	public AgreementDto setCode(String code) {
 		return (AgreementDto) super.setCode(code);
 	}

@@ -6,10 +6,11 @@ import org.cyk.utility.__kernel__.object.__static__.representation.AbstractIdent
 import org.cyk.utility.__kernel__.object.__static__.representation.ExistenceDto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Getter @Setter @Accessors(chain=true)
+@Getter @Setter @Accessors(chain=true) @NoArgsConstructor
 public class TaskDto extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringNamableImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -19,6 +20,10 @@ public class TaskDto extends AbstractIdentifiableSystemScalarStringIdentifiableB
 	private Integer orderNumber;
 	private Integer weightInKiloGram;
 	private ExistenceDto existence;
+	
+	public TaskDto(String identifier,String code,String name) {
+		super(identifier, code, name);
+	}
 	
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
 }
