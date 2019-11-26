@@ -13,6 +13,7 @@ import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.constant.ConstantEmpty;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
+import org.cyk.utility.server.persistence.PersistenceFunctionReader;
 import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
@@ -123,6 +124,14 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 		return __readMany__(properties, ____getQueryParameters____(properties));
 	}
 	
+	@Override
+	protected String __getQueryIdentifier__(Class<?> klass, Properties properties, Object... objects) {
+		if(PersistenceFunctionReader.class.equals(klass)) {
+			if(Boolean.TRUE.equals(__isFilterByKeys__(properties, Truck.FIELD_TASKS)))
+				return readByTasksCodes;
+		}
+		return super.__getQueryIdentifier__(klass, properties, objects);
+	}
 	@Override
 	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodes)) {
