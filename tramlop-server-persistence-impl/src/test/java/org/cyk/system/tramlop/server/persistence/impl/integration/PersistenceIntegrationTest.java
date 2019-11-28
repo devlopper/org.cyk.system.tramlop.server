@@ -161,6 +161,15 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	
 	@Test
+	public void readTruckWhereTaskCodeIs_pese_vide_noAgreementTruck() throws Exception {
+		userTransaction.begin();
+		__inject__(AgreementTruckPersistence.class).deleteAll();
+		userTransaction.commit();
+		Collection<Truck> trucks = __inject__(TruckPersistence.class).readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist();
+		assertThat(trucks).isEmpty();
+	}
+	
+	@Test
 	public void readDeliveryTransientFields_d1_tasks() {
 		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1");
 		assertThat(delivery).isNotNull();

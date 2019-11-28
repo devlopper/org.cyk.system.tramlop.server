@@ -52,7 +52,13 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Pesée avant chargement",1,Boolean.TRUE)
 				,new Task(Task.CODE_LOAD,"Chargement",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_LOAD,"Pesée après chargement",3,Boolean.TRUE)
 				,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Pesée avant déchargement",4,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Pesée après déchargement",5,Boolean.TRUE)));
-		__inject__(ProductBusiness.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
+		
+		for(String index : new String[] {"Sable","Gravier","Farine","Fer","Bois"})
+			__inject__(ProductBusiness.class).create(new Product(index.toUpperCase().replaceAll(" ", "_"),index,new BigDecimal("0.001")));
+		
+		for(String index : new String[] {"Port Autonôme d'Abidjan","Yopougon","Cocody","Bingerville","Anyama","Bouaké","Quartier France"})
+			__inject__(PlaceBusiness.class).create(new Place(index.toUpperCase().replaceAll(" ", "_"),index,null,null));
+		
 		Integer numberOfTrucks = 10;
 		for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
 			__inject__(TruckBusiness.class).create(new Truck("t"+index));
@@ -65,11 +71,10 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 		__inject__(DriverBusiness.class).create(new Driver("dB", new Person("a", "a", "a", new Contact())));
 		
 		__inject__(CustomerBusiness.class).create(new Customer("c01", new Person(RandomHelper.getFirstName(), RandomHelper.getMaleLastName(), "a", new Contact())));
-		__inject__(PlaceBusiness.class).create(new Place("p01", "Place", null, null));
 		
 		if(numberOfAgreements != null) {
-			createAgreement("a1", "c01", "p01", Boolean.FALSE,0);
-			createAgreement("a2", "c01", "p01", Boolean.FALSE,5);	
+			createAgreement("a1", "c01", "COCODY", Boolean.FALSE,0);
+			createAgreement("a2", "c01", "COCODY", Boolean.FALSE,5);	
 		}
 	}
 	
@@ -84,11 +89,11 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 				if(Boolean.TRUE.equals(task.getWeighable()))
 					task.setWeightInKiloGram(1000);
 				if(Boolean.TRUE.equals(task.getProductable()))
-					task.setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1");
+					task.setProductFromCode("SABLE").setUnloadingPlaceFromCode("ANYAMA").setDriverFromCode("d1");
 				if(task.getOrderNumber() == 1)
 					__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, agreementCode,truckCode,driverCode,closed).addTasks(task));
 				else
-					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
+					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("SABLE").setUnloadingPlaceFromCode("ANYAMA").setDriverFromCode("d1"));
 			}
 		}
 	}
