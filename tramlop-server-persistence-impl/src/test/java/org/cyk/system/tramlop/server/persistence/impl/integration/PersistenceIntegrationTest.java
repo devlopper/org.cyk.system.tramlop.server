@@ -76,29 +76,29 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_VIDE_AVANT_CHARGE() {
-		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+	public void readTrucksByTasksCodes_CODE_WEIGH_BEFORE_LOAD() {
+		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_WEIGH_BEFORE_LOAD);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t1","t2","t3","t4","t6","t7","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_CHARGE() {
-		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_CHARGE);
+	public void readTrucksByTasksCodes_CODE_LOAD() {
+		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_LOAD);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t2","t3","t4","t7","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_CHARGE() {
-		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_CHARGE);
+	public void readTrucksByTasksCodes_CODE_WEIGH_AFTER_LOAD() {
+		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_WEIGH_AFTER_LOAD);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t3","t4","t8","t9");
 	}
 	
 	@Test
-	public void readTrucksByTasksCodes_CODE_PESE_DECHARGE() {
-		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_PESE_DECHARGE);
+	public void readTrucksByTasksCodes_CODE_WEIGH_BEFORE_UNLOAD() {
+		Collection<Truck> trucks = ((ReadTruckByTasksCodes)__inject__(TruckPersistence.class)).readByTasksCodes(Task.CODE_WEIGH_BEFORE_UNLOAD);
 		assertThat(trucks).isNotEmpty();
 		assertThat(trucks.stream().map(Truck::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("t4","t9");
 	}
@@ -168,7 +168,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS));
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotEmpty();
-		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD);
 	}
 	
 	@Test
@@ -179,7 +179,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS+"."+Task.FIELD_EXISTENCE));
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotEmpty();
-		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD);
 	}
 	
 	@Test
@@ -190,7 +190,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d1",new Properties().setFields(Delivery.FIELD_TASKS+"."+Delivery.FIELD_WEIGHT_IN_KILO_GRAM));
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotNull();
-		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD);
 	}
 	
 	@Test
@@ -201,7 +201,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d2",new Properties().setFields(Delivery.FIELD_TASKS));
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotEmpty();
-		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD);
 	}
 	
 	@Test
@@ -230,9 +230,9 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	private void createDataBaseForReadTruckQueries() {
 		try {
 			userTransaction.begin();
-			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1),new Task(Task.CODE_CHARGE,"Charger",2,Boolean.FALSE,Boolean.TRUE)
-					,new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3),new Task(Task.CODE_DEPART,"Départ",4),new Task(Task.CODE_ARRIVEE,"Arrivée",5)
-					,new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6),new Task(Task.CODE_DECHARGE,"Décharger",7),new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8)));
+			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Peser à vide avant chargement",1)
+					,new Task(Task.CODE_LOAD,"Charger",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_LOAD,"Peser chargé",3)
+					,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Peser arrivée",4),new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Peser à vide apres déchargement",5)));
 			__inject__(ProductPersistence.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
 			Integer numberOfTrucks = 10;
 			for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
@@ -293,14 +293,14 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		}
 		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
 			if(index == 1+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD);
 			else if(index == 2+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD);
 			else if(index == 3+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE,Task.CODE_DEPART);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_AFTER_LOAD);
 			else if(index == 4+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE,Task.CODE_DEPART
-						,Task.CODE_ARRIVEE,Task.CODE_PESE_DECHARGE,Task.CODE_DECHARGE,Task.CODE_PESE_VIDE_APRES_DECHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_AFTER_LOAD
+						,Task.CODE_WEIGH_BEFORE_UNLOAD,Task.CODE_WEIGH_AFTER_UNLOAD);
 		}
 	}
 }

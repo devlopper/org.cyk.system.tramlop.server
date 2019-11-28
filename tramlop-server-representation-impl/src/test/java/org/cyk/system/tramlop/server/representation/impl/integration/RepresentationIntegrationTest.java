@@ -90,8 +90,8 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
-		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE);
-		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD);
+		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(15248);
 	}
@@ -101,10 +101,10 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));		
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_LOAD).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));		
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
-		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
+		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD);
 	}
 	
 	@Test
@@ -112,15 +112,15 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_LOAD).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_LOAD).setWeightInKiloGram(150));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
-		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE,Task.CODE_DEPART);
-		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_AFTER_LOAD);
+		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(15248);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_CHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_AFTER_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(150);
 	}
@@ -130,20 +130,20 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_LOAD).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_LOAD).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_BEFORE_UNLOAD).setWeightInKiloGram(140));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
-		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE
-				,Task.CODE_PESE_CHARGE,Task.CODE_DEPART,Task.CODE_ARRIVEE,Task.CODE_PESE_DECHARGE,Task.CODE_DECHARGE);
-		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD
+				,Task.CODE_WEIGH_AFTER_LOAD,Task.CODE_WEIGH_BEFORE_UNLOAD);
+		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(15248);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_CHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_AFTER_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(150);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_DECHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_UNLOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(140);
 	}
@@ -153,24 +153,24 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_LOAD).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_LOAD).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_BEFORE_UNLOAD).setWeightInKiloGram(140));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_UNLOAD).setWeightInKiloGram(500));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
-		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE
-				,Task.CODE_PESE_CHARGE,Task.CODE_DEPART,Task.CODE_ARRIVEE,Task.CODE_PESE_DECHARGE,Task.CODE_DECHARGE,Task.CODE_PESE_VIDE_APRES_DECHARGE);
-		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD
+				,Task.CODE_WEIGH_AFTER_LOAD,Task.CODE_WEIGH_BEFORE_UNLOAD,Task.CODE_WEIGH_AFTER_UNLOAD);
+		Weighing weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(15248);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_CHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_AFTER_LOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(150);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_DECHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_BEFORE_UNLOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(140);
-		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_PESE_VIDE_APRES_DECHARGE);
+		weighing =  __inject__(WeighingPersistence.class).readByDeliveryCodeByTaskCode(deliveryCode, Task.CODE_WEIGH_AFTER_UNLOAD);
 		assertThat(weighing).isNotNull();
 		assertThat(weighing.getWeightInKiloGram()).isEqualTo(500);
 	}
@@ -180,10 +180,10 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_LOAD).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_LOAD).setWeightInKiloGram(150));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_BEFORE_UNLOAD).setWeightInKiloGram(140));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_WEIGH_AFTER_UNLOAD).setWeightInKiloGram(500));
 		
 		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier(deliveryCode);
 		assertThat(delivery).isNotNull();
@@ -191,8 +191,8 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier(deliveryCode,new Properties().setFields(Delivery.FIELD_TASKS));
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotEmpty();
-		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE
-				, Task.CODE_PESE_CHARGE, Task.CODE_DEPART, Task.CODE_ARRIVEE, Task.CODE_PESE_DECHARGE, Task.CODE_DECHARGE, Task.CODE_PESE_VIDE_APRES_DECHARGE);
+		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD
+				, Task.CODE_WEIGH_AFTER_LOAD, Task.CODE_WEIGH_BEFORE_UNLOAD, Task.CODE_WEIGH_AFTER_UNLOAD);
 	}
 	
 }

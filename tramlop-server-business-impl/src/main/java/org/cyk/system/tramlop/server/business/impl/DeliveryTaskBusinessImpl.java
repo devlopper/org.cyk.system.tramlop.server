@@ -37,7 +37,7 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 		if(deliveryTask.getTask() != null && deliveryTask.getTask().getOrderNumber() > 1) {
 			Task previousTask = __inject__(TaskPersistence.class).readByOrderNumber(deliveryTask.getTask().getOrderNumber() - 1);
 			if(__persistence__.readByDeliveryCodeByTaskOrderNumber(deliveryTask.getDelivery().getCode(), previousTask.getOrderNumber()) == null)
-				throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire.");
+				throw new RuntimeException("La réalisation de la tache <<"+previousTask.getName()+">> est obligatoire avant "+deliveryTask.getTask().getName()+".");
 		}
 		
 		if(deliveryTask.getExistence() == null)
@@ -67,13 +67,6 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 				deliveryTask.getDelivery().setDriver(deliveryTask.getDriver());
 				__inject__(DeliveryPersistence.class).update(deliveryTask.getDelivery());
 			}
-		}
-		
-		if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_PESE_CHARGE)) {
-			create(new DeliveryTask(null, deliveryTask.getDelivery().getCode(), Task.CODE_DEPART));
-		}else if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_ARRIVEE)) {
-			create(new DeliveryTask(null, deliveryTask.getDelivery().getCode(), Task.CODE_PESE_DECHARGE).setWeightInKiloGram(deliveryTask.getWeightInKiloGram()));
-			create(new DeliveryTask(null, deliveryTask.getDelivery().getCode(), Task.CODE_DECHARGE));
 		}
 	}
 	

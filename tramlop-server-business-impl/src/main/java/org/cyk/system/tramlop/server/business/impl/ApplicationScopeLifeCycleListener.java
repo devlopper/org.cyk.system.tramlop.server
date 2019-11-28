@@ -49,10 +49,9 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 	/**/
 	
 	public static void createDataBase(Integer numberOfAgreements) throws Exception{
-		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_PESE_VIDE_AVANT_CHARGE,"Peser à vide avant chargement",1,Boolean.TRUE)
-				,new Task(Task.CODE_CHARGE,"Charger",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_PESE_CHARGE,"Peser chargé",3,Boolean.TRUE),new Task(Task.CODE_DEPART,"Départ",4)
-				,new Task(Task.CODE_ARRIVEE,"Arrivée",5),new Task(Task.CODE_PESE_DECHARGE,"Peser arrivée",6,Boolean.TRUE),new Task(Task.CODE_DECHARGE,"Décharger",7)
-				,new Task(Task.CODE_PESE_VIDE_APRES_DECHARGE,"Peser à vide apres déchargement",8,Boolean.TRUE)));
+		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Pesée avant chargement",1,Boolean.TRUE)
+				,new Task(Task.CODE_LOAD,"Chargement",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_LOAD,"Pesée après chargement",3,Boolean.TRUE)
+				,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Pesée avant déchargement",4,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Pesée après déchargement",5,Boolean.TRUE)));
 		__inject__(ProductBusiness.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
 		Integer numberOfTrucks = 10;
 		for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
@@ -115,14 +114,14 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 		
 		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
 			if(index == 1+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD);
 			else if(index == 2+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD);
 			else if(index == 3+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_AFTER_LOAD);
 			else if(index == 4+numberOfTrucksOfAgreementOffSet)
-				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE,Task.CODE_PESE_CHARGE
-						,Task.CODE_ARRIVEE,Task.CODE_PESE_VIDE_APRES_DECHARGE);
+				createDelivery(agreementCode, "p01", "d"+index, "t"+index,"d"+index, Boolean.FALSE, Task.CODE_WEIGH_BEFORE_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_AFTER_LOAD
+						,Task.CODE_WEIGH_BEFORE_UNLOAD);
 			
 		}
 	}
