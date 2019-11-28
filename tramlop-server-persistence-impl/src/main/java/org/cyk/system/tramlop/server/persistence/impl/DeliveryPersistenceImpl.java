@@ -16,9 +16,11 @@ import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Weighing;
+import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
+import org.cyk.utility.server.persistence.PersistenceFunctionReader;
 import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
@@ -27,8 +29,7 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 
 	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT = "SELECT delivery FROM Delivery delivery WHERE delivery.closed = %s AND "
 			+ " delivery.truck.code IN :trucksCodes";
-	
-	
+		
 	private String readWhereDeliveryClosedIsFalseExistByTrucksCodes;
 	
 	@Override
@@ -45,14 +46,6 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 			properties = new Properties();
 		properties.setIfNull(Properties.QUERY_IDENTIFIER, readWhereDeliveryClosedIsFalseExistByTrucksCodes);
 		return __readMany__(properties, ____getQueryParameters____(properties,trucksCodes));
-	}
-	
-	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
-		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readWhereDeliveryClosedIsFalseExistByTrucksCodes)) {
-			return new Object[]{"trucksCodes",objects[0]};
-		}
-		return super.__getQueryParameters__(queryContext, properties, objects);
 	}
 	
 	@Override
@@ -115,6 +108,41 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 					}
 				}
 			}
+		}else if((Delivery.FIELD_TASKS+"."+Task.FIELD_UNLOADING_PLACE).equals(fieldName)) {
+			if(delivery.getTasks() == null) {
+				Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
+				if(CollectionHelper.isNotEmpty(deliveryTasks))
+					delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
+			}				
+			if(CollectionHelper.isNotEmpty(delivery.getTasks())){
+				for(Task task : delivery.getTasks()) {
+					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
+					if(deliveryTask != null && Boolean.TRUE.equals(deliveryTask.getTask().getProductable())) {
+						Loading loading = __inject__(LoadingPersistence.class).readByDeliveryByTask(delivery, task);
+						if(loading != null)
+							task.setUnloadingPlace(loading.getUnloadingPlace());
+					}
+				}
+			}
 		}
+	}
+	
+	@Override
+	protected String __getQueryIdentifier__(Class<?> klass, Properties properties, Object... objects) {
+		if(PersistenceFunctionReader.class.equals(klass)) {
+			if(__isFilterByKeys__(properties, Delivery.FIELD_TRUCKS) && __isFilterByKeys__(properties, Delivery.FIELD_CLOSED))
+				return readWhereDeliveryClosedIsFalseExistByTrucksCodes;
+		}
+		return super.__getQueryIdentifier__(klass, properties, objects);
+	}
+	
+	@Override
+	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readWhereDeliveryClosedIsFalseExistByTrucksCodes)) {
+			if(ArrayHelper.isEmpty(objects))
+				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_TRUCKS)};
+			return new Object[]{"trucksCodes",objects[0]};
+		}
+		return super.__getQueryParameters__(queryContext, properties, objects);
 	}
 }

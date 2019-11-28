@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryTaskByDeliveriesCodes;
@@ -31,12 +33,18 @@ private String readByDeliveryCodeByTaskCode,readByDeliveryCodeByTaskOrderNumber,
 
 	@Override
 	public DeliveryTask readByDeliveryCodeByTaskCode(String deliveryCode, String taskCode) {
-		if(StringHelper.isBlank(deliveryCode) || StringHelper.isBlank(taskCode))
+		/*if(StringHelper.isBlank(deliveryCode) || StringHelper.isBlank(taskCode))
 			return null;
 		if(properties == null)
 			properties = new Properties();
 		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByDeliveryCodeByTaskCode);
 		return __readOne__(properties, ____getQueryParameters____(properties,deliveryCode,taskCode));
+		*/
+		try {
+			return __inject__(EntityManager.class).createNamedQuery(readByDeliveryCodeByTaskCode, DeliveryTask.class).setParameter("deliveryCode", deliveryCode).setParameter("taskCode", taskCode).getSingleResult();
+		} catch (NoResultException exception) {
+			return null;
+		}
 	}
 	
 	@Override

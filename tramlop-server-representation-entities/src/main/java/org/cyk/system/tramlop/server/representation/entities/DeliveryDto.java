@@ -26,6 +26,7 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private Boolean closed;
 	private Integer weightInKiloGram;
 	private ArrayList<TaskDto> tasks;
+	private ArrayList<TruckDto> trucks;
 	
 	public DeliveryDto(String code,String agreementCode,String truckCode,String driverCode,Boolean closed) {
 		super(code);
@@ -78,6 +79,7 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_TRUCK = "truck";
+	public static final String FIELD_TRUCKS = "trucks";
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_CLOSED = "closed";
 }

@@ -1,6 +1,7 @@
 package org.cyk.system.tramlop.server.representation.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.cyk.utility.__kernel__.object.__static__.representation.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
 
@@ -14,6 +15,7 @@ public class TruckDto extends AbstractIdentifiableSystemScalarStringIdentifiable
 	private static final long serialVersionUID = 1L;
 
 	private DriverDto driver;
+	private ArrayList<DriverDto> drivers;
 	
 	public TruckDto(String identifier,String code) {
 		super(identifier,code);

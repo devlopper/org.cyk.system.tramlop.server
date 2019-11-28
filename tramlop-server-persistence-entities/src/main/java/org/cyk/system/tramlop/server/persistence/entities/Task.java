@@ -32,6 +32,7 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	@Transient private Weighing weighing;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Product product;
+	@Transient private Driver driver;
 	@Transient private Place unloadingPlace;
 	@Transient private Existence existence;
 	
@@ -66,6 +67,14 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 		return this;
 	}
 	
+	public Task setDriverFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.driver = null;
+		else
+			this.driver = InstanceGetter.getInstance().getByBusinessIdentifier(Driver.class, code);
+		return this;
+	}
+	
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
 	public static final String FIELD_WEIGHABLE = "weighable";
 	public static final String FIELD_PRODUCTABLE = "productable";
@@ -74,6 +83,7 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	public static final String FIELD_EXISTENCE = "existence";
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
 	public static final String FIELD_UNLOADING_PLACE = "unloadingPlace";
+	public static final String FIELD_DRIVER = "driver";
 	
 	public static final String COLUMN_ORDER_NUMBER = FIELD_ORDER_NUMBER;
 	public static final String COLUMN_WEIGHABLE = FIELD_WEIGHABLE;

@@ -1,10 +1,12 @@
 package org.cyk.system.tramlop.server.persistence.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Person;
@@ -21,12 +23,18 @@ public class Driver extends AbstractIdentifiableSystemScalarStringIdentifiableBu
 
 	@Embedded private Person person;
 	
+	@Transient private Collection<Agreement> agreements;
+	@Transient private Collection<Truck> trucks;
+	
 	public Driver(String code,Person person) {
 		super(code);
 		this.person = person;
 	}
 	
 	public static final String FIELD_PERSON = "person";
+	public static final String FIELD_AGREEMENTS = "agreements";
+	public static final String FIELD_TRUCKS = "trucks";
 	
-	public static final String TABLE_NAME = "driver";	
+	public static final String TABLE_NAME = "driver";
+	
 }

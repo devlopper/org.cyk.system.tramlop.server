@@ -36,6 +36,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@Transient private Product product;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Collection<Task> tasks;
+	@Transient private Collection<Truck> trucks;
 	
 	public Delivery(String code,String agreementCode,String truckCode,String driverCode,Boolean closed) {
 		super(code);
@@ -126,6 +127,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_TRUCK = "truck";
+	public static final String FIELD_TRUCKS = "trucks";
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_CLOSED = "closed";
 	public static final String FIELD_PRODUCT = "product";

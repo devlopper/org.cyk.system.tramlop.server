@@ -101,7 +101,7 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));		
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));		
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
 		assertThat(tasks.stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
@@ -112,7 +112,7 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
 		assertThat(tasks).isNotEmpty();
@@ -130,7 +130,7 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
 		Collection<Task> tasks = ((FindTaskByDeliveriesCodes)__inject__(TaskBusiness.class)).findByDeliveriesCodes(deliveryCode);
@@ -153,7 +153,7 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));
@@ -180,7 +180,7 @@ public class RepresentationIntegrationTest extends AbstractRepresentationArquill
 		__inject__(AgreementBusiness.class).create(new Agreement("a100","c01","p01",null).addProduct("p01", 5000).addArrivalPlace("p01", 100).addTruck("t11","d1"));
 		String deliveryCode = __getRandomCode__();
 		__inject__(DeliveryRepresentation.class).createOne(new DeliveryDto(deliveryCode, null,"t11", null).setWeightInKiloGram(15248));
-		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_CHARGE).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_CHARGE).setWeightInKiloGram(150));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_ARRIVEE).setWeightInKiloGram(140));
 		__inject__(DeliveryTaskRepresentation.class).createOne(new DeliveryTaskDto().setTruckFromCode("t11").setTaskFromCode(Task.CODE_PESE_VIDE_APRES_DECHARGE).setWeightInKiloGram(500));

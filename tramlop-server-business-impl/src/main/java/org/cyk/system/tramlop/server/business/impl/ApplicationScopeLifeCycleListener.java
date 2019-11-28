@@ -7,6 +7,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.cyk.system.tramlop.server.business.api.AgreementBusiness;
+import org.cyk.system.tramlop.server.business.api.AgreementTruckSecondaryDriverBusiness;
 import org.cyk.system.tramlop.server.business.api.CustomerBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryBusiness;
 import org.cyk.system.tramlop.server.business.api.DeliveryTaskBusiness;
@@ -17,6 +18,7 @@ import org.cyk.system.tramlop.server.business.api.TaskBusiness;
 import org.cyk.system.tramlop.server.business.api.TruckBusiness;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementTruckSecondaryDriver;
 import org.cyk.system.tramlop.server.persistence.entities.Customer;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
@@ -59,6 +61,10 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 		}
 		__inject__(TruckBusiness.class).create(new Truck("t11"));
 		__inject__(TruckBusiness.class).create(new Truck("t12"));
+		
+		__inject__(DriverBusiness.class).create(new Driver("dA", new Person("a", "a", "a", new Contact())));
+		__inject__(DriverBusiness.class).create(new Driver("dB", new Person("a", "a", "a", new Contact())));
+		
 		__inject__(CustomerBusiness.class).create(new Customer("c01", new Person(RandomHelper.getFirstName(), RandomHelper.getMaleLastName(), "a", new Contact())));
 		__inject__(PlaceBusiness.class).create(new Place("p01", "Place", null, null));
 		
@@ -79,11 +85,11 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 				if(Boolean.TRUE.equals(task.getWeighable()))
 					task.setWeightInKiloGram(1000);
 				if(Boolean.TRUE.equals(task.getProductable()))
-					task.setProductFromCode("p01").setUnloadingPlaceFromCode("p01");
+					task.setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1");
 				if(task.getOrderNumber() == 1)
 					__inject__(DeliveryBusiness.class).create(new Delivery(deliveryCode, agreementCode,truckCode,driverCode,closed).addTasks(task));
 				else
-					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01").setUnloadingPlaceFromCode("p01"));
+					__inject__(DeliveryTaskBusiness.class).create(new DeliveryTask(null, deliveryCode, taskCode).setWeightInKiloGram(1000).setProductFromCode("p01").setUnloadingPlaceFromCode("p01").setDriverFromCode("d1"));
 			}
 		}
 	}
@@ -99,6 +105,13 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 			agreement.addTruck("t"+index,"d"+index);
 		}
 		__inject__(AgreementBusiness.class).create(agreement);
+		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
+			if(index == 2) {
+				__inject__(AgreementTruckSecondaryDriverBusiness.class).create(new AgreementTruckSecondaryDriver(agreementCode, "t"+index, "dA"));
+			}else if(index == 3) {
+				__inject__(AgreementTruckSecondaryDriverBusiness.class).create(new AgreementTruckSecondaryDriver(agreementCode, "t"+index, "dB"));
+			}
+		}
 		
 		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
 			if(index == 1+numberOfTrucksOfAgreementOffSet)

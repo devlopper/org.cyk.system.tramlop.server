@@ -60,7 +60,13 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 				throw new RuntimeException(deliveryTask.getTask().getCode()+" : product is required");
 			if(deliveryTask.getUnloadingPlace() == null)
 				throw new RuntimeException(deliveryTask.getTask().getCode()+" : product unloading place is required");
+			if(deliveryTask.getDriver() == null)
+				throw new RuntimeException(deliveryTask.getTask().getCode()+" : truck driver is required");
 			__inject__(LoadingBusiness.class).create(new Loading(deliveryTask,deliveryTask.getProduct(),deliveryTask.getUnloadingPlace()));
+			if(!deliveryTask.getDelivery().getDriver().equals(deliveryTask.getDriver())) {
+				deliveryTask.getDelivery().setDriver(deliveryTask.getDriver());
+				__inject__(DeliveryPersistence.class).update(deliveryTask.getDelivery());
+			}
 		}
 		
 		if(deliveryTask.getTask().getCode().contentEquals(Task.CODE_PESE_CHARGE)) {

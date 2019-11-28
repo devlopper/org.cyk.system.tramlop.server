@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementTruckSecondaryDriverPersistence;
 import org.cyk.system.tramlop.server.persistence.api.CustomerPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
@@ -21,6 +22,7 @@ import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreements
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByTasksCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementTruckSecondaryDriver;
 import org.cyk.system.tramlop.server.persistence.entities.Customer;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
@@ -202,6 +204,27 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_PESE_VIDE_AVANT_CHARGE,Task.CODE_CHARGE);
 	}
 	
+	@Test
+	public void readDeliveryTasks() {
+		Collection<DeliveryTask> deliveryTasks = __inject__(DeliveryTaskPersistence.class).read(new Properties().setFields(Delivery.FIELD_TASKS+","+Delivery.FIELD_TASKS+"."+Task.FIELD_EXISTENCE
+				+","+Delivery.FIELD_TASKS+"."+Task.FIELD_WEIGHT_IN_KILO_GRAM+","+Delivery.FIELD_TASKS+"."+Task.FIELD_PRODUCT));
+		assertThat(deliveryTasks).isNotNull();
+	}
+	
+	@Test
+	public void readTruckByDrivers_a1_t1() {
+		Collection<Driver> drivers = __inject__(DriverPersistence.class).readByAgreementCodeByTruckCode("a1", "t1");
+		assertThat(drivers).isNotNull();
+		assertThat(drivers.stream().map(Driver::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d1");
+	}
+	
+	@Test
+	public void readTruckByDrivers_a1_t2() {
+		Collection<Driver> drivers = __inject__(DriverPersistence.class).readByAgreementCodeByTruckCode("a1", "t2");
+		assertThat(drivers).isNotNull();
+		assertThat(drivers.stream().map(Driver::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d2","dA");
+	}
+	
 	/**/
 	
 	private void createDataBaseForReadTruckQueries() {
@@ -218,6 +241,10 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 			}
 			__inject__(TruckPersistence.class).create(new Truck("t11"));
 			__inject__(TruckPersistence.class).create(new Truck("t12"));
+			
+			__inject__(DriverPersistence.class).create(new Driver("dA", new Person("a", "a", "a", new Contact())));
+			__inject__(DriverPersistence.class).create(new Driver("dB", new Person("a", "a", "a", new Contact())));
+			
 			__inject__(CustomerPersistence.class).create(new Customer("c01", new Person("a", "a", "a", new Contact())));
 			__inject__(PlacePersistence.class).create(new Place("p01", "Place", null, null));
 			
@@ -258,6 +285,11 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		Integer numberOfTrucksOfAgreement = 5;
 		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
 			__inject__(AgreementTruckPersistence.class).create(new AgreementTruck(agreementCode, "t"+index, "d"+index));
+			if(index == 2) {
+				__inject__(AgreementTruckSecondaryDriverPersistence.class).create(new AgreementTruckSecondaryDriver(agreementCode, "t"+index, "dA"));
+			}else if(index == 3) {
+				__inject__(AgreementTruckSecondaryDriverPersistence.class).create(new AgreementTruckSecondaryDriver(agreementCode, "t"+index, "dB"));
+			}
 		}
 		for(Integer index = 1+numberOfTrucksOfAgreementOffSet ; index <= numberOfTrucksOfAgreement+numberOfTrucksOfAgreementOffSet ; index = index + 1) {
 			if(index == 1+numberOfTrucksOfAgreementOffSet)

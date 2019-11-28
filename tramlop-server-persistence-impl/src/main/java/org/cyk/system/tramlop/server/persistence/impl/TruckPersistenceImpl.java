@@ -1,12 +1,17 @@
 package org.cyk.system.tramlop.server.persistence.impl;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByTasksCodes;
+import org.cyk.system.tramlop.server.persistence.entities.Agreement;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
@@ -125,6 +130,19 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 	}
 	
 	@Override
+	protected void __listenExecuteReadAfterSetFieldValue__(Truck truck, Field field, Properties properties) {
+		super.__listenExecuteReadAfterSetFieldValue__(truck, field, properties);
+		if(field.getName().equals(Truck.FIELD_DRIVER)) {
+			Agreement agreement =  CollectionHelper.getFirst(__inject__(AgreementPersistence.class).readWhereAgreementClosedIsFalseExistByTrucksCodes(truck.getCode()));
+			if(agreement != null) {
+				AgreementTruck agreementTruck = __inject__(AgreementTruckPersistence.class).readByAgreementByTruck(agreement, truck);
+				if(agreementTruck != null)
+					truck.setDriver(agreementTruck.getDriver());	
+			}
+		}
+	}
+	
+	@Override
 	protected String __getQueryIdentifier__(Class<?> klass, Properties properties, Object... objects) {
 		if(PersistenceFunctionReader.class.equals(klass)) {
 			if(Boolean.TRUE.equals(__isFilterByKeys__(properties, Truck.FIELD_TASKS)))
@@ -132,6 +150,7 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 		}
 		return super.__getQueryIdentifier__(klass, properties, objects);
 	}
+	
 	@Override
 	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodes)) {

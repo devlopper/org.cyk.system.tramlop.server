@@ -19,6 +19,7 @@ import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.constant.ConstantEmpty;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
+import org.cyk.utility.server.persistence.PersistenceFunctionReader;
 import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
@@ -67,6 +68,15 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 			agreement.setArrivalPlaces(((ReadArrivalPlaceByAgreementsCodes)__inject__(PlacePersistence.class)).readByAgreementsCodes(agreement.getCode()));
 		else if(field.getName().equals(Agreement.FIELD_TRUCKS))
 			agreement.setTrucks(((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes(agreement.getCode()));
+	}
+	
+	@Override
+	protected String __getQueryIdentifier__(Class<?> klass, Properties properties, Object... objects) {
+		if(PersistenceFunctionReader.class.equals(klass)) {
+			if(Boolean.TRUE.equals(__isFilterByKeys__(properties, Agreement.FIELD_TRUCKS)))
+				return readByTrucksCodes;
+		}
+		return super.__getQueryIdentifier__(klass, properties, objects);
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package org.cyk.system.tramlop.server.persistence.api;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
+import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
@@ -32,4 +34,27 @@ public interface DeliveryPersistence extends PersistenceEntity<Delivery> {
 		return readWhereDeliveryClosedIsFalseExistByTrucksCodes(CollectionHelper.listOf(trucksCodes),null);
 	}
 	
+	default Collection<Delivery> readWhereDeliveryClosedIsFalseExistByTrucks(Collection<Truck> trucks,Properties properties) {
+		if(CollectionHelper.isEmpty(trucks))
+			return null;
+		return readWhereDeliveryClosedIsFalseExistByTrucksCodes(trucks.stream().map(Truck::getCode).collect(Collectors.toList()),properties);
+	}
+	
+	default Collection<Delivery> readWhereDeliveryClosedIsFalseExistByTrucks(Collection<Truck> trucks) {
+		if(CollectionHelper.isEmpty(trucks))
+			return null;
+		return readWhereDeliveryClosedIsFalseExistByTrucksCodes(trucks.stream().map(Truck::getCode).collect(Collectors.toList()),null);
+	}
+	
+	default Collection<Delivery> readWhereDeliveryClosedIsFalseExistByTrucks(Properties properties,Truck...trucks) {
+		if(ArrayHelper.isEmpty(trucks))
+			return null;
+		return readWhereDeliveryClosedIsFalseExistByTrucks(CollectionHelper.listOf(trucks),properties);
+	}
+	
+	default Collection<Delivery> readWhereDeliveryClosedIsFalseExistByTrucks(Truck...trucks) {
+		if(ArrayHelper.isEmpty(trucks))
+			return null;
+		return readWhereDeliveryClosedIsFalseExistByTrucks(CollectionHelper.listOf(trucks),null);
+	}
 }

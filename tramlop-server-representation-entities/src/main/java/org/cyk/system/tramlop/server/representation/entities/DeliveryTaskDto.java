@@ -2,6 +2,7 @@ package org.cyk.system.tramlop.server.representation.entities;
 
 import java.io.Serializable;
 
+import org.cyk.system.tramlop.server.persistence.entities.Driver;
 import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
@@ -79,6 +80,18 @@ public class DeliveryTaskDto extends AbstractIdentifiableSystemScalarStringImpl 
 			if(place == null)
 				return this;
 			this.unloadingPlace = __inject__(PlaceDtoMapper.class).getSource(place);
+		}
+		return this;
+	}
+	
+	public DeliveryTaskDto setDriverFromCode(String code) {
+		if(StringHelper.isBlank(code))
+			this.driver = null;
+		else {
+			Driver driver = InstanceGetter.getInstance().getByBusinessIdentifier(Driver.class, code);
+			if(driver == null)
+				return this;
+			this.driver = __inject__(DriverDtoMapper.class).getSource(driver);
 		}
 		return this;
 	}

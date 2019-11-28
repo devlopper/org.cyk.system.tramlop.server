@@ -35,6 +35,7 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@Embedded private Existence existence;
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
 	
+	@Transient private Collection<Driver> drivers;
 	@Transient private Collection<Truck> trucks;
 	@Transient private Collection<Product> products;
 	@Transient private Collection<Place> arrivalPlaces;
@@ -158,6 +159,7 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	public static final String FIELD_EXISTENCE = "existence";
 	public static final String FIELD_CLOSED = "closed";
 	public static final String FIELD_TRUCKS = "trucks";
+	public static final String FIELD_DRIVERS = "drivers";
 	public static final String FIELD_PRODUCTS = "products";
 	public static final String FIELD_ARRIVAL_PLACES = "arrivalPlaces";
 	
