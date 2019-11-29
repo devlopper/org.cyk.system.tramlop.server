@@ -13,7 +13,7 @@ public class AgreementProductDto extends AbstractIdentifiableSystemScalarStringI
 	private static final long serialVersionUID = 1L;
 
 	private AgreementDto agreement;
-	private ProductDto truck;
+	private ProductDto product;
 	private Integer weightInKiloGram;
 	
 	public static final String FIELD_AGREEMENT = "agreement";

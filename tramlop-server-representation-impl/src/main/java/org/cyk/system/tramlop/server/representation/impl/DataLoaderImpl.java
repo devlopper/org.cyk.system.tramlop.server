@@ -14,7 +14,7 @@ public class DataLoaderImpl extends AbstractDataLoaderImpl implements Serializab
 	@Override
 	public Response load() {
 		try {
-			ApplicationScopeLifeCycleListener.createDataBase(2);
+			ApplicationScopeLifeCycleListener.createDataBase(null);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			return Response.serverError().build();

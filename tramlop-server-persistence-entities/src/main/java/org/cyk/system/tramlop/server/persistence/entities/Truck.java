@@ -24,7 +24,18 @@ public class Truck extends AbstractIdentifiableSystemScalarStringIdentifiableBus
 	@Transient private Driver driver;
 	@Transient private Collection<Agreement> agreements;
 	@Transient private Collection<Task> tasks;
+	@Transient private Collection<Integer> tasksCounts;
 	@Transient private Collection<Driver> drivers;
+	
+	public Truck(String identifier,String code,long taskOrderNumber) {
+		super(code);
+		setIdentifier(identifier);
+	}
+	
+	public Truck(String identifier,String code) {
+		super(code);
+		setIdentifier(identifier);
+	}
 	
 	public Truck(String code) {
 		super(code);
@@ -41,6 +52,7 @@ public class Truck extends AbstractIdentifiableSystemScalarStringIdentifiableBus
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_AGREEMENTS = "agreements";
 	public static final String FIELD_TASKS = "tasks";
+	public static final String FIELD_TASKS_COUNTS = "tasksCounts";
 	public static final String FIELD_DRIVERS = "drivers";
 	
 	public static final String TABLE_NAME = "truck";
