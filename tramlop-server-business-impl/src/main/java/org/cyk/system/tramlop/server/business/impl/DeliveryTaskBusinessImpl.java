@@ -68,6 +68,11 @@ public class DeliveryTaskBusinessImpl extends AbstractBusinessEntityImpl<Deliver
 				__inject__(DeliveryPersistence.class).update(deliveryTask.getDelivery());
 			}
 		}
+		
+		if(Boolean.TRUE.equals(deliveryTask.getTask().getEndable())) {
+			deliveryTask.getDelivery().setClosed(Boolean.TRUE);
+			__inject__(DeliveryPersistence.class).update(deliveryTask.getDelivery());
+		}
 	}
 	
 }

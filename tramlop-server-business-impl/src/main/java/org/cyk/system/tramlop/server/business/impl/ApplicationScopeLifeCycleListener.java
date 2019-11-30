@@ -49,9 +49,10 @@ public class ApplicationScopeLifeCycleListener extends AbstractApplicationScopeL
 	/**/
 	
 	public static void createDataBase(Integer numberOfAgreements) throws Exception{
-		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Pesée avant chargement",1,Boolean.TRUE)
+		__inject__(TaskBusiness.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Pesée avant chargement",1,Boolean.TRUE).setStartable(Boolean.TRUE)
 				,new Task(Task.CODE_LOAD,"Chargement",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_LOAD,"Pesée après chargement",3,Boolean.TRUE)
-				,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Pesée avant déchargement",4,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Pesée après déchargement",5,Boolean.TRUE)));
+				,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Pesée avant déchargement",4,Boolean.TRUE)
+				,new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Pesée après déchargement",5,Boolean.TRUE).setEndable(Boolean.TRUE)));
 		
 		for(String index : new String[] {"Sable","Gravier","Farine","Fer","Bois"})
 			__inject__(ProductBusiness.class).create(new Product(index.toUpperCase().replaceAll(" ", "_"),index,new BigDecimal("0.001")));

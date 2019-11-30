@@ -12,6 +12,7 @@ import org.cyk.system.tramlop.server.persistence.api.query.ReadTaskByDeliveriesC
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.business.AbstractBusinessEntityImpl;
+import org.cyk.utility.server.business.BusinessFunctionCreator;
 
 @ApplicationScoped
 public class TaskBusinessImpl extends AbstractBusinessEntityImpl<Task, TaskPersistence> implements TaskBusiness,FindTaskByDeliveriesCodes,Serializable {
@@ -21,5 +22,14 @@ public class TaskBusinessImpl extends AbstractBusinessEntityImpl<Task, TaskPersi
 	public Collection<Task> findByDeliveriesCodes(Collection<String> codes, Properties properties) {
 		return ((ReadTaskByDeliveriesCodes)__persistence__).readByDeliveriesCodes(codes, properties);
 	}
-		
+	
+	@Override
+	protected void __listenExecuteCreateBefore__(Task task, Properties properties, BusinessFunctionCreator function) {
+		super.__listenExecuteCreateBefore__(task, properties, function);
+		if(task.getStartable() == null)
+			task.setStartable(Boolean.FALSE);
+		if(task.getEndable() == null)
+			task.setEndable(Boolean.FALSE);
+	}
+	
 }

@@ -27,6 +27,8 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	@NotNull @Column(name = COLUMN_ORDER_NUMBER,unique = true) private Integer orderNumber;
 	@NotNull @Column(name = COLUMN_WEIGHABLE) private Boolean weighable;
 	@NotNull @Column(name = COLUMN_PRODUCTABLE) private Boolean productable;
+	@NotNull @Column(name = COLUMN_STARTABLE) private Boolean startable;
+	@NotNull @Column(name = COLUMN_ENDABLE) private Boolean endable;
 	
 	@Transient private Collection<Delivery> deliveries;
 	@Transient private Weighing weighing;
@@ -78,6 +80,8 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	public static final String FIELD_ORDER_NUMBER = "orderNumber";
 	public static final String FIELD_WEIGHABLE = "weighable";
 	public static final String FIELD_PRODUCTABLE = "productable";
+	public static final String FIELD_STARTABLE = "startable";
+	public static final String FIELD_ENDABLE = "endable";
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_DELIVERIES = "deliveries";
 	public static final String FIELD_EXISTENCE = "existence";
@@ -88,6 +92,8 @@ public class Task extends AbstractIdentifiableSystemScalarStringIdentifiableBusi
 	public static final String COLUMN_ORDER_NUMBER = FIELD_ORDER_NUMBER;
 	public static final String COLUMN_WEIGHABLE = FIELD_WEIGHABLE;
 	public static final String COLUMN_PRODUCTABLE = FIELD_PRODUCTABLE;
+	public static final String COLUMN_STARTABLE = FIELD_STARTABLE;
+	public static final String COLUMN_ENDABLE = FIELD_ENDABLE;
 	
 	public static final String TABLE_NAME = "task";
 	
