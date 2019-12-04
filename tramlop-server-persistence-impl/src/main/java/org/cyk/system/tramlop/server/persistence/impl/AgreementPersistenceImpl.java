@@ -65,7 +65,7 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 		if(field.getName().equals(Agreement.FIELD_PRODUCTS))
 			agreement.setProducts(((ReadProductByAgreementsCodes)__inject__(ProductPersistence.class)).readByAgreementsCodes(agreement.getCode()));
 		else if(field.getName().equals(Agreement.FIELD_ARRIVAL_PLACES))
-			agreement.setArrivalPlaces(((ReadArrivalPlaceByAgreementsCodes)__inject__(PlacePersistence.class)).readByAgreementsCodes(agreement.getCode()));
+			agreement.setArrivalPlaces(((ReadArrivalPlaceByAgreementsCodes)__inject__(PlacePersistence.class)).readArrivalByAgreementsCodes(agreement.getCode()));
 		else if(field.getName().equals(Agreement.FIELD_TRUCKS))
 			agreement.setTrucks(((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes(agreement.getCode()));
 	}
