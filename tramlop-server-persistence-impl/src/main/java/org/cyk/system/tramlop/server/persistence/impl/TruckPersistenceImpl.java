@@ -193,32 +193,8 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 				objects = new Object[] {queryContext.getFilterByKeysValue(Truck.FIELD_TASKS)};
 			return new Object[]{"tasksCodes",objects[0]};
 		}else if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readWhereDeliveryClosedIsFalseByTasksCounts)) {
-			if(ArrayHelper.isEmpty(objects)) {
+			if(ArrayHelper.isEmpty(objects))
 				objects = new Object[] {queryContext.getFilterByKeysValue(Truck.FIELD_TASKS_COUNTS)};
-				/*if(objects.length > 1 && objects[0] instanceof Collection) {
-					@SuppressWarnings("unchecked")
-					List<Object> list = (List<Object>) objects[0];
-					for(Integer index = 0 ; index < list.size() ; index = index + 1) {
-						list.set(index, NumberHelper.getLong(list.get(index)));
-					}
-				}*/
-				/*if(objects.length > 0) {
-					Long[] longs = new Long[objects.length];
-					for(Integer index = 0 ; index < objects.length ; index = index + 1) {
-						Object object = objects[index];
-						if(object instanceof Collection)
-							longs
-						longs[index] = NumberHelper.getLong();
-					}
-					objects = longs;
-					System.out.println("TruckPersistenceImpl.__getQueryParameters__() longs : "+ArrayUtils.toString(longs));
-				}*/
-			}
-			/*
-			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 0 : "+objects[0]);
-			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 1 : "+NumberHelper.getLongs((Collection<?>) objects[0]));
-			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 2 : "+NumberHelper.getLongs((Collection<?>) objects[0]).iterator().next());
-			*/
 			return new Object[]{"tasksCounts",NumberHelper.getLongs((Collection<?>) objects[0])};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);

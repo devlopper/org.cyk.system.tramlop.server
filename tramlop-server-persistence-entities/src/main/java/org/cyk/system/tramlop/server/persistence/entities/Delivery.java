@@ -41,6 +41,11 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@Transient private Integer weightInKiloGramOfProductLost;
 	@Transient private Collection<Truck> trucks;
 	
+	public Delivery(String identifier,String truckCode,String driverNames,String productName,String destinationName,int weightBeforeLoad,int weightAfterLoad
+			,int weightDifferenceBefore ,int weightBeforeUnload,int weightAfterUnload,int weightDifferenceAfter,int lost,boolean closed) {
+		
+	}
+	
 	public Delivery(String code,String agreementCode,String truckCode,String driverCode,Boolean closed) {
 		super(code);
 		setAgreementFromCode(agreementCode);

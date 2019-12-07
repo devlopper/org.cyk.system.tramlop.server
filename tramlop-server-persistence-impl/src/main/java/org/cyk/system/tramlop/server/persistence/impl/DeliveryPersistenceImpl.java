@@ -10,6 +10,7 @@ import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.LoadingPersistence;
 import org.cyk.system.tramlop.server.persistence.api.WeighingPersistence;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryTaskByDeliveriesCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
@@ -26,18 +27,76 @@ import org.cyk.utility.server.persistence.PersistenceFunctionReader;
 import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
-public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Delivery> implements DeliveryPersistence,Serializable {
+public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Delivery> implements DeliveryPersistence,ReadDeliveryByAgreements,Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT = "SELECT delivery FROM Delivery delivery WHERE delivery.closed = %s AND "
 			+ " delivery.truck.code IN :trucksCodes";
 		
-	private String readWhereDeliveryClosedIsFalseExistByTrucksCodes;
+	private String readByAgreementsCodes,readWhereDeliveryClosedIsFalseExistByTrucksCodes,readView;
 	
 	@Override
 	protected void __listenPostConstructPersistenceQueries__() {
 		super.__listenPostConstructPersistenceQueries__();
+		addQueryCollectInstances(readByAgreementsCodes, "SELECT delivery FROM Delivery delivery WHERE delivery.agreement.code = :agreementsCodes");
 		addQueryCollectInstances(readWhereDeliveryClosedIsFalseExistByTrucksCodes, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT, "false"));
+		addQuery(readView, "SELECT new  org.cyk.system.tramlop.server.persistence.entities.Delivery(delivery.identifier,truck.code,CONCAT(driver.person.firstName,' ',driver.person.lastNames)" + 
+				"	,product.name,place.name" + 
+				"	,weighing_before_load.weightInKiloGram,weighing_after_load.weightInKiloGram,weighing_after_load.weightInKiloGram - weighing_before_load.weightInKiloGram" + 
+				"	,weighing_before_unload.weightInKiloGram,weighing_after_unload.weightInKiloGram,weighing_before_unload.weightInKiloGram - weighing_after_unload.weightInKiloGram" + 
+				"	,(weighing_after_load.weightInKiloGram - weighing_before_load.weightInKiloGram)-(weighing_before_unload.weightInKiloGram - weighing_after_unload.weightInKiloGram)" + 
+				"	,delivery.closed)" + 
+				
+				" FROM Delivery delivery,Truck truck,Driver driver,Agreement agreement,AgreementProduct agreementproduct,Product product,Place place" + 
+				"	,DeliveryTask deliverytask_before_load,Task task_before_load,Weighing weighing_before_load" + 
+				"   ,DeliveryTask deliverytask_load,Task task_load,Loading loading" + 
+				"	,DeliveryTask deliverytask_after_load,Task as task_after_load,Weighing as weighing_after_load" + 
+				"	,DeliveryTask deliverytask_before_unload,Task as task_before_unload,Weighing as weighing_before_unload" + 
+				"	,DeliveryTask deliverytask_after_unload,Task as task_after_unload,Weighing as weighing_after_unload" + 
+
+				" WHERE delivery.truck = truck.identifier " + 
+				"  AND delivery.driver = driver.identifier" + 
+				"  AND delivery.agreement = agreement.identifier" + 
+				"  AND agreement.identifier = agreementproduct.agreement" + 
+				"  AND product.identifier = agreementproduct.product" + 
+				"  AND delivery.identifier = deliverytask_load.delivery" + 
+				"  " + 
+				"  AND deliverytask_before_load.delivery = delivery.identifier" + 
+				"  AND deliverytask_before_load.task = task_before_load.identifier" + 
+				"  AND task_before_load.orderNumber = 1" + 
+				"  AND weighing_before_load.deliveryTask = deliverytask_before_load.identifier" + 
+				"  " + 
+				"  AND deliverytask_load.delivery = delivery.identifier" + 
+				"  AND deliverytask_load.task = task_load.identifier" + 
+				"  AND task_load.orderNumber = 2" + 
+				"  AND loading.deliveryTask = deliverytask_load.identifier" + 
+				"  AND loading.product = product.identifier" + 
+				"  AND loading.unloadingPlace = place.identifier" + 
+				"  " + 
+				"  AND deliverytask_after_load.delivery = delivery.identifier" + 
+				"  AND deliverytask_after_load.task = task_after_load.identifier" + 
+				"  AND task_after_load.orderNumber = 3" + 
+				"  AND weighing_after_load.deliveryTask = deliverytask_after_load.identifier" + 
+				"  " + 
+				"  AND deliverytask_before_unload.delivery = delivery.identifier" + 
+				"  AND deliverytask_before_unload.task = task_before_unload.identifier" + 
+				"  AND task_before_unload.orderNumber = 4" + 
+				"  AND weighing_before_unload.deliveryTask = deliverytask_before_unload.identifier" + 
+				"  " + 
+				"  AND deliverytask_after_unload.delivery = delivery.identifier" + 
+				"  AND deliverytask_after_unload.task = task_after_unload.identifier" + 
+				"  AND task_after_unload.orderNumber = 5" + 
+				"  AND weighing_after_unload.deliveryTask = deliverytask_after_unload.identifier",Delivery.class);
+	}
+	
+	@Override
+	public Collection<Delivery> readByAgreementsCodes(Collection<String> agreementsCodes, Properties properties) {
+		if(CollectionHelper.isEmpty(agreementsCodes))
+			return null;
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByAgreementsCodes);
+		return __readMany__(properties, ____getQueryParameters____(properties,agreementsCodes));
 	}
 	
 	@Override
@@ -148,6 +207,8 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 		if(PersistenceFunctionReader.class.equals(klass)) {
 			if(__isFilterByKeys__(properties, Delivery.FIELD_TRUCKS) && __isFilterByKeys__(properties, Delivery.FIELD_CLOSED))
 				return readWhereDeliveryClosedIsFalseExistByTrucksCodes;
+			else if(__isFilterByKeys__(properties, Delivery.FIELD_AGREEMENT))
+				return readByAgreementsCodes;
 		}
 		return super.__getQueryIdentifier__(klass, properties, objects);
 	}
@@ -158,6 +219,11 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 			if(ArrayHelper.isEmpty(objects))
 				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_TRUCKS)};
 			return new Object[]{"trucksCodes",objects[0]};
+		}
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodes)) {
+			if(ArrayHelper.isEmpty(objects))
+				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_AGREEMENT)};
+			return new Object[]{"agreementsCodes",objects[0]};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);
 	}

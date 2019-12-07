@@ -19,6 +19,7 @@ import org.cyk.system.tramlop.server.persistence.api.ProductPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.WeighingPersistence;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByTasksCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
@@ -371,6 +372,30 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		Collection<Driver> drivers = __inject__(DriverPersistence.class).readByAgreementCodeByTruckCode("a1", "t2");
 		assertThat(drivers).isNotNull();
 		assertThat(drivers.stream().map(Driver::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d2","dA");
+	}
+	
+	@Test
+	public void readDeliveryByAgreementsCodes_a1() {
+		createDataBase();
+		Collection<Delivery> deliveries = ((ReadDeliveryByAgreements)__inject__(DeliveryPersistence.class)).readByAgreementsCodes("a1");
+		assertThat(deliveries).isNotNull();
+		assertThat(deliveries.stream().map(Delivery::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d1","d2","d3","d4");
+	}
+	
+	@Test
+	public void readDeliveryByAgreementsCodes_a2() {
+		createDataBase();
+		Collection<Delivery> deliveries = ((ReadDeliveryByAgreements)__inject__(DeliveryPersistence.class)).readByAgreementsCodes("a2");
+		assertThat(deliveries).isNotNull();
+		assertThat(deliveries.stream().map(Delivery::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d6","d7","d8","d9");
+	}
+	
+	//@Test
+	public void readDeliveryView() {
+		createDataBase();
+		Collection<Delivery> deliveries = __inject__(DeliveryPersistence.class).read(new Properties().setQueryIdentifier(DeliveryPersistence.READ_WIEW));
+		assertThat(deliveries).isNotNull();
+		assertThat(deliveries.stream().map(Delivery::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d6","d7","d8","d9");
 	}
 	
 	/**/

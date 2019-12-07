@@ -7,7 +7,7 @@ import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
 
-public interface ReadArrivalPlaceByAgreementsCodes extends ReadByAgreementsCodes<Place> {
+public interface ReadArrivalPlaceByAgreementsCodes extends ReadByAgreements<Place> {
 
 	Collection<Place> readArrivalByAgreementsCodes(Collection<String> codes,Properties properties);
 	
