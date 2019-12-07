@@ -18,6 +18,7 @@ import org.cyk.system.tramlop.server.persistence.api.PlacePersistence;
 import org.cyk.system.tramlop.server.persistence.api.ProductPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
+import org.cyk.system.tramlop.server.persistence.api.WeighingPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByTasksCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
@@ -31,10 +32,12 @@ import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
+import org.cyk.system.tramlop.server.persistence.entities.Weighing;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Contact;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Person;
 import org.cyk.utility.__kernel__.properties.Properties;
+import org.cyk.utility.__kernel__.random.RandomHelper;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.persistence.query.filter.Filter;
 import org.cyk.utility.server.persistence.test.arquillian.AbstractPersistenceArquillianIntegrationTestWithDefaultDeployment;
@@ -199,7 +202,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		createDataBase(Boolean.FALSE);
 		Collection<Truck> trucks = __inject__(TruckPersistence.class).read(new Properties()
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS));
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS));
 		assertThat(trucks).isEmpty();
 		
 		userTransaction.begin();
@@ -208,7 +211,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		userTransaction.commit();
 		
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
 				);
 		assertThat(trucks).isEmpty();
@@ -220,7 +223,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		userTransaction.commit();
 		
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
 				);
 		assertThat(trucks).isEmpty();
@@ -229,7 +232,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		__inject__(DeliveryPersistence.class).create(new Delivery("d1", "a2", "t3", "d3", Boolean.FALSE));
 		userTransaction.commit();
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
 				);
 		assertThat(trucks).isEmpty();
@@ -238,7 +241,7 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		__inject__(DeliveryTaskPersistence.class).create(new DeliveryTask(null, "d1", Task.CODE_WEIGH_BEFORE_LOAD));
 		userTransaction.commit();
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
 				);
 		assertThat(trucks).isNotEmpty();
@@ -248,13 +251,13 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		__inject__(DeliveryTaskPersistence.class).create(new DeliveryTask(null, "d1", Task.CODE_LOAD));
 		userTransaction.commit();
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_WEIGH_BEFORE_LOAD*/1l)))
 				);
 		assertThat(trucks).isEmpty();
 		
 		trucks = __inject__(TruckPersistence.class).read(new Properties()
-				.setQueryIdentifier(TruckPersistence.READ_BY_TASKS_COUNTS)
+				.setQueryIdentifier(TruckPersistence.READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS)
 				.setQueryFilters(__inject__(Filter.class).addField(Truck.FIELD_TASKS_COUNTS, CollectionHelper.listOf(/*Task.CODE_LOAD*/2l)))
 				);
 		assertThat(trucks).isNotEmpty();
@@ -295,6 +298,43 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		assertThat(delivery).isNotNull();
 		assertThat(delivery.getTasks()).isNotNull();
 		assertThat(delivery.getTasks().stream().map(Task::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder(Task.CODE_WEIGH_BEFORE_LOAD);
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d4_taksWeightInKiloGramOfProductAfterLoad() {
+		createDataBase();
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductAfterLoad()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4",new Properties()
+					.setFields(Delivery.FIELD_TASKS+"."+Delivery.FIELD_WEIGHT_IN_KILO_GRAM+","+Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD));	
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductAfterLoad()).isNotNull();
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d4_taksWeightInKiloGramOfProductAfterUnload() {
+		createDataBase();
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductAfterUnload()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4",new Properties()
+				.setFields(Delivery.FIELD_TASKS+"."+Delivery.FIELD_WEIGHT_IN_KILO_GRAM+","+Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_UNLOAD));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductAfterUnload()).isNotNull();
+	}
+	
+	@Test
+	public void readDeliveryTransientFields_d4_taksWeightInKiloGramOfProductLost() {
+		createDataBase();
+		Delivery delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4");
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductLost()).isNull();
+		delivery = __inject__(DeliveryPersistence.class).readByBusinessIdentifier("d4",new Properties()
+				.setFields(Delivery.FIELD_TASKS+"."+Delivery.FIELD_WEIGHT_IN_KILO_GRAM+","+Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD
+						+","+Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_UNLOAD+","+Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOST));
+		assertThat(delivery).isNotNull();
+		assertThat(delivery.getWeightInKiloGramOfProductLost()).isNotNull();
 	}
 	
 	@Test
@@ -339,8 +379,11 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		try {
 			userTransaction.begin();
 			__inject__(TaskPersistence.class).createMany(List.of(new Task(Task.CODE_WEIGH_BEFORE_LOAD,"Peser à vide avant chargement",1)
-					,new Task(Task.CODE_LOAD,"Charger",2,Boolean.FALSE,Boolean.TRUE),new Task(Task.CODE_WEIGH_AFTER_LOAD,"Peser chargé",3)
-					,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Peser arrivée",4),new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Peser à vide apres déchargement",5)));
+					.setWeighable(Boolean.TRUE).setStartable(Boolean.TRUE).setEndable(Boolean.FALSE)
+					,new Task(Task.CODE_LOAD,"Charger",2,Boolean.FALSE,Boolean.TRUE).setProductable(Boolean.TRUE).setStartable(Boolean.FALSE).setEndable(Boolean.FALSE)
+					,new Task(Task.CODE_WEIGH_AFTER_LOAD,"Peser chargé",3).setWeighable(Boolean.TRUE).setStartable(Boolean.FALSE).setEndable(Boolean.FALSE)
+					,new Task(Task.CODE_WEIGH_BEFORE_UNLOAD,"Peser arrivée",4).setWeighable(Boolean.TRUE).setStartable(Boolean.FALSE).setEndable(Boolean.FALSE)
+					,new Task(Task.CODE_WEIGH_AFTER_UNLOAD,"Peser à vide apres déchargement",5).setWeighable(Boolean.TRUE).setStartable(Boolean.FALSE).setEndable(Boolean.TRUE)));
 			__inject__(ProductPersistence.class).createMany(List.of(new Product("p01","Sable",new BigDecimal("0.001"))));
 			Integer numberOfTrucks = 10;
 			for(Integer index = 1 ; index <= numberOfTrucks ; index = index + 1) {
@@ -375,7 +418,11 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 		if(StringHelper.isBlank(deliveryCode) || CollectionHelper.isEmpty(tasksCodes))
 			return;
 		for(String taskCode : tasksCodes) {
-			__inject__(DeliveryTaskPersistence.class).create(new DeliveryTask(null, deliveryCode, taskCode));
+			DeliveryTask deliveryTask = new DeliveryTask(null, deliveryCode, taskCode);
+			__inject__(DeliveryTaskPersistence.class).create(deliveryTask);
+			if(deliveryTask.getTask().getWeighable()) {
+				__inject__(WeighingPersistence.class).create(new Weighing(deliveryTask, RandomHelper.getNumeric(4).intValue()));
+			}
 		}
 	}
 	/*

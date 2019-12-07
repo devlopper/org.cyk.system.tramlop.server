@@ -36,6 +36,9 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@Transient private Product product;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Collection<Task> tasks;
+	@Transient private Integer weightInKiloGramOfProductAfterLoad;
+	@Transient private Integer weightInKiloGramOfProductAfterUnload;
+	@Transient private Integer weightInKiloGramOfProductLost;
 	@Transient private Collection<Truck> trucks;
 	
 	public Delivery(String code,String agreementCode,String truckCode,String driverCode,Boolean closed) {
@@ -132,6 +135,9 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	public static final String FIELD_CLOSED = "closed";
 	public static final String FIELD_PRODUCT = "product";
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD = "weightInKiloGramOfProductAfterLoad";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_UNLOAD = "weightInKiloGramOfProductAfterUnload";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOST = "weightInKiloGramOfProductLost";
 	public static final String FIELD_TASKS = "tasks";
 	
 	public static final String COLUMN_AGREEMENT = Agreement.TABLE_NAME;

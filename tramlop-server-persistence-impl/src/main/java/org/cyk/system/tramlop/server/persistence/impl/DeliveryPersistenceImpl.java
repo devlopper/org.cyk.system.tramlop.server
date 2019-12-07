@@ -18,7 +18,9 @@ import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.system.tramlop.server.persistence.entities.Weighing;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
+import org.cyk.utility.__kernel__.number.NumberHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
+import org.cyk.utility.__kernel__.string.Strings;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
 import org.cyk.utility.server.persistence.PersistenceFunctionReader;
 import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
@@ -49,26 +51,47 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 	}
 	
 	@Override
+	protected void __listenExecuteReadAfterSetFieldsValues__(Delivery delivery, Strings fieldsNames, Properties properties) {
+		super.__listenExecuteReadAfterSetFieldsValues__(delivery, fieldsNames, properties);
+		if(CollectionHelper.contains(fieldsNames, Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD)) {
+			if(CollectionHelper.getSize(delivery.getTasks()) > 2) {
+				setTasksIfNull(delivery);
+				delivery.setWeightInKiloGramOfProductAfterLoad(NumberHelper.getInteger(NumberHelper.subtract(CollectionHelper.getElementAt(delivery.getTasks(), 2).getWeightInKiloGram()
+						- CollectionHelper.getElementAt(delivery.getTasks(), 0).getWeightInKiloGram())));
+			}
+		}
+		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_UNLOAD)) {			
+			if(CollectionHelper.getSize(delivery.getTasks()) > 4) {
+				setTasksIfNull(delivery);
+				delivery.setWeightInKiloGramOfProductAfterUnload(CollectionHelper.getElementAt(delivery.getTasks(), 3).getWeightInKiloGram()
+						- CollectionHelper.getElementAt(delivery.getTasks(), 4).getWeightInKiloGram());
+			}
+		}
+		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOST)) {
+			if(CollectionHelper.getSize(delivery.getTasks()) > 4) {
+				setTasksIfNull(delivery);
+				delivery.setWeightInKiloGramOfProductLost(delivery.getWeightInKiloGramOfProductAfterLoad()-delivery.getWeightInKiloGramOfProductAfterUnload());
+			}
+		}
+	}
+	
+	@Override
 	protected void __listenExecuteReadAfterSetFieldValue__(Delivery delivery, Field field, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldValue__(delivery, field, properties);
 		if(field.getName().equals(Delivery.FIELD_TASKS)) {
 			Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
 			if(CollectionHelper.isNotEmpty(deliveryTasks))
 				delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
-		}else {
-			
 		}
 	}
 	
 	@Override
 	protected void __listenExecuteReadAfterSetFieldValue__(Delivery delivery, String fieldName, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldValue__(delivery, fieldName, properties);
-		if((Delivery.FIELD_TASKS+"."+Task.FIELD_EXISTENCE).equals(fieldName)) {
-			if(delivery.getTasks() == null) {
-				Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
-				if(CollectionHelper.isNotEmpty(deliveryTasks))
-					delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
-			}				
+		if(fieldName.startsWith(Delivery.FIELD_TASKS+".")) {
+			setTasksIfNull(delivery);
+		}
+		if((Delivery.FIELD_TASKS+"."+Task.FIELD_EXISTENCE).equals(fieldName)) {						
 			if(CollectionHelper.isNotEmpty(delivery.getTasks())){
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
@@ -77,11 +100,6 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				}
 			}
 		}else if((Delivery.FIELD_TASKS+"."+Task.FIELD_WEIGHT_IN_KILO_GRAM).equals(fieldName)) {
-			if(delivery.getTasks() == null) {
-				Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
-				if(CollectionHelper.isNotEmpty(deliveryTasks))
-					delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
-			}				
 			if(CollectionHelper.isNotEmpty(delivery.getTasks())){
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
@@ -93,11 +111,6 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				}
 			}
 		}else if((Delivery.FIELD_TASKS+"."+Task.FIELD_PRODUCT).equals(fieldName)) {
-			if(delivery.getTasks() == null) {
-				Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
-				if(CollectionHelper.isNotEmpty(deliveryTasks))
-					delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
-			}				
 			if(CollectionHelper.isNotEmpty(delivery.getTasks())){
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
@@ -109,11 +122,6 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				}
 			}
 		}else if((Delivery.FIELD_TASKS+"."+Task.FIELD_UNLOADING_PLACE).equals(fieldName)) {
-			if(delivery.getTasks() == null) {
-				Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
-				if(CollectionHelper.isNotEmpty(deliveryTasks))
-					delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
-			}				
 			if(CollectionHelper.isNotEmpty(delivery.getTasks())){
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
@@ -124,6 +132,14 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 					}
 				}
 			}
+		}
+	}
+	
+	private void setTasksIfNull(Delivery delivery) {
+		if(delivery.getTasks() == null) {
+			Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
+			if(CollectionHelper.isNotEmpty(deliveryTasks))
+				delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
 		}
 	}
 	

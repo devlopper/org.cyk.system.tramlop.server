@@ -25,6 +25,9 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private DriverDto driver;
 	private Boolean closed;
 	private Integer weightInKiloGram;
+	private Integer weightInKiloGramOfProductAfterLoad;
+	private Integer weightInKiloGramOfProductAfterUnload;
+	private Integer weightInKiloGramOfProductLost;
 	private ArrayList<TaskDto> tasks;
 	private ArrayList<TruckDto> trucks;
 	

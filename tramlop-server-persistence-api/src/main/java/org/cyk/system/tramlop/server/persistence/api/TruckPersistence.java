@@ -73,24 +73,24 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 	}
 	*/
 	
-	Collection<Truck> readByTasksCounts(Collection<Integer> tasksCounts,Properties properties);
+	Collection<Truck> readWhereDeliveryClosedIsFalseByTasksCounts(Collection<Integer> tasksCounts,Properties properties);
 	
-	default Collection<Truck> readByTasksCounts(Collection<Integer> tasksCounts) {
+	default Collection<Truck> readWhereDeliveryClosedIsFalseByTasksCounts(Collection<Integer> tasksCounts) {
 		if(CollectionHelper.isEmpty(tasksCounts))
 			return null;
-		return readByTasksCounts(tasksCounts,null);
+		return readWhereDeliveryClosedIsFalseByTasksCounts(tasksCounts,null);
 	}
 	
-	default Collection<Truck> readByTasksCounts(Properties properties,Integer...tasksCounts) {
+	default Collection<Truck> readWhereDeliveryClosedIsFalseByTasksCounts(Properties properties,Integer...tasksCounts) {
 		if(ArrayHelper.isEmpty(tasksCounts))
 			return null;
-		return readByTasksCounts(CollectionHelper.listOf(tasksCounts),properties);
+		return readWhereDeliveryClosedIsFalseByTasksCounts(CollectionHelper.listOf(tasksCounts),properties);
 	}
 	
-	default Collection<Truck> readByTasksCounts(Integer...tasksCounts) {
+	default Collection<Truck> readWhereDeliveryClosedIsFalseByTasksCounts(Integer...tasksCounts) {
 		if(ArrayHelper.isEmpty(tasksCounts))
 			return null;
-		return readByTasksCounts(CollectionHelper.listOf(tasksCounts),null);
+		return readWhereDeliveryClosedIsFalseByTasksCounts(CollectionHelper.listOf(tasksCounts),null);
 	}
 	
 	/**/
@@ -98,5 +98,5 @@ public interface TruckPersistence extends PersistenceEntity<Truck> {
 	String READ_WHERE_AGREEMENT_CLOSED_IS_FALSE_EXIST_AND_DELIVERY_CLOSED_IS_FALSE_DOES_NOT_EXIST 
 		= QueryIdentifierBuilder.getInstance().build(Truck.class,"readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist");
 
-	String READ_BY_TASKS_COUNTS = QueryIdentifierBuilder.getInstance().build(Truck.class,"readByTasksCounts");
+	String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS = QueryIdentifierBuilder.getInstance().build(Truck.class,"readWhereDeliveryClosedIsFalseByTasksCounts");
 }

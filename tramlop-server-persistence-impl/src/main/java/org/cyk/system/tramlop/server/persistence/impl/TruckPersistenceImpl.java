@@ -26,11 +26,6 @@ import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> implements TruckPersistence,ReadTruckByAgreementsCodes,ReadTruckByTasksCodes,Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String readByAgreementsCodes,readByTasksCodes,readWhereAgreementClosedIsFalseExist,readWhereAgreementClosedIsFalseDoesNotExist
-		,readWhereDeliveryClosedIsFalseExist,readWhereDeliveryClosedIsFalseDoesNotExist
-		,readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist,readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist
-		,readByTasksCounts;
-
 	private static final String READ_WHERE_AGREEMENT_CLOSED_IS_FALSE_EXIST_FORMAT = "SELECT tuple FROM Truck tuple WHERE"
 			+ " %s EXISTS(SELECT subTuple FROM AgreementTruck subTuple WHERE subTuple.truck = tuple AND subTuple.agreement.closed = false)";
 	
@@ -53,14 +48,19 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 			;
 	*/
 	
-	private static final String READ_BY_TASKS_COUNTS_FORMAT = 
+	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS_FORMAT = 
 			"SELECT new org.cyk.system.tramlop.server.persistence.entities.Truck(truck.identifier,truck.code)" + 
 			"FROM Truck truck,Delivery delivery,DeliveryTask deliveryTask,Task task " + 
-			"WHERE truck = delivery.truck AND deliveryTask.delivery = delivery AND deliveryTask.task = task " + 
+			"WHERE truck = delivery.truck AND deliveryTask.delivery = delivery AND deliveryTask.task = task AND delivery.closed = false " + 
 			"GROUP BY truck.identifier "+
 			"HAVING COUNT(*) IN :tasksCounts"
 			;
 	
+	private String readByAgreementsCodes,readByTasksCodes,readWhereAgreementClosedIsFalseExist,readWhereAgreementClosedIsFalseDoesNotExist
+		,readWhereDeliveryClosedIsFalseExist,readWhereDeliveryClosedIsFalseDoesNotExist
+		,readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist,readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseDoesNotExist
+		,readWhereDeliveryClosedIsFalseByTasksCounts;
+
 	@Override
 	protected void __listenPostConstructPersistenceQueries__() {
 		super.__listenPostConstructPersistenceQueries__();
@@ -76,7 +76,7 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 		addQueryCollectInstances(readWhereDeliveryClosedIsFalseExist, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_FORMAT, ConstantEmpty.STRING));
 		addQueryCollectInstances(readWhereDeliveryClosedIsFalseDoesNotExist, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_FORMAT, "NOT"));
 		
-		addQuery(readByTasksCounts, String.format(READ_BY_TASKS_COUNTS_FORMAT),Truck.class);
+		addQuery(readWhereDeliveryClosedIsFalseByTasksCounts, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_BY_TASKS_COUNTS_FORMAT),Truck.class);
 		
 		addQueryCollectInstances(readWhereAgreementClosedIsFalseExistAndDeliveryClosedIsFalseExist
 				, String.format(READ_WHERE_AGREEMENT_CLOSED_IS_FALSE_EXIST_AND_DELIVERY_CLOSED_IS_FALSE_EXIST_FORMAT, ConstantEmpty.STRING));
@@ -153,10 +153,10 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 	}
 	
 	@Override
-	public Collection<Truck> readByTasksCounts(Collection<Integer> tasksCounts, Properties properties) {
+	public Collection<Truck> readWhereDeliveryClosedIsFalseByTasksCounts(Collection<Integer> tasksCounts, Properties properties) {
 		if(properties == null)
 			properties = new Properties();
-		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByTasksCounts);
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readWhereDeliveryClosedIsFalseByTasksCounts);
 		return __readMany__(properties, ____getQueryParameters____(properties,tasksCounts));
 	}
 	
@@ -192,17 +192,34 @@ public class TruckPersistenceImpl extends AbstractPersistenceEntityImpl<Truck> i
 			if(ArrayHelper.isEmpty(objects))
 				objects = new Object[] {queryContext.getFilterByKeysValue(Truck.FIELD_TASKS)};
 			return new Object[]{"tasksCodes",objects[0]};
-		}else if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByTasksCounts)) {
+		}else if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readWhereDeliveryClosedIsFalseByTasksCounts)) {
 			if(ArrayHelper.isEmpty(objects)) {
 				objects = new Object[] {queryContext.getFilterByKeysValue(Truck.FIELD_TASKS_COUNTS)};
-				if(objects.length > 0) {
+				/*if(objects.length > 1 && objects[0] instanceof Collection) {
+					@SuppressWarnings("unchecked")
+					List<Object> list = (List<Object>) objects[0];
+					for(Integer index = 0 ; index < list.size() ; index = index + 1) {
+						list.set(index, NumberHelper.getLong(list.get(index)));
+					}
+				}*/
+				/*if(objects.length > 0) {
 					Long[] longs = new Long[objects.length];
-					for(Integer index = 0 ; index < objects.length ; index = index + 1)
-						longs[index] = NumberHelper.getLong(objects[index]);
+					for(Integer index = 0 ; index < objects.length ; index = index + 1) {
+						Object object = objects[index];
+						if(object instanceof Collection)
+							longs
+						longs[index] = NumberHelper.getLong();
+					}
 					objects = longs;
-				}
+					System.out.println("TruckPersistenceImpl.__getQueryParameters__() longs : "+ArrayUtils.toString(longs));
+				}*/
 			}
-			return new Object[]{"tasksCounts",objects[0]};
+			/*
+			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 0 : "+objects[0]);
+			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 1 : "+NumberHelper.getLongs((Collection<?>) objects[0]));
+			System.out.println("TruckPersistenceImpl.__getQueryParameters__() 2 : "+NumberHelper.getLongs((Collection<?>) objects[0]).iterator().next());
+			*/
+			return new Object[]{"tasksCounts",NumberHelper.getLongs((Collection<?>) objects[0])};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);
 	}
