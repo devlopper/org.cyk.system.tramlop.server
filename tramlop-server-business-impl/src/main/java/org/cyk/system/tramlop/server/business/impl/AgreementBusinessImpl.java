@@ -10,6 +10,7 @@ import org.cyk.system.tramlop.server.business.api.AgreementBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementProductBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementTruckBusiness;
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
+import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
@@ -17,8 +18,10 @@ import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
+import org.cyk.utility.__kernel__.string.Strings;
 import org.cyk.utility.server.business.AbstractBusinessEntityImpl;
 import org.cyk.utility.server.business.BusinessFunctionCreator;
+import org.cyk.utility.server.business.BusinessFunctionModifier;
 
 @ApplicationScoped
 public class AgreementBusinessImpl extends AbstractBusinessEntityImpl<Agreement, AgreementPersistence> implements AgreementBusiness,Serializable {
@@ -45,4 +48,14 @@ public class AgreementBusinessImpl extends AbstractBusinessEntityImpl<Agreement,
 		
 	}
 	
+	@Override
+	protected void __listenExecuteUpdateBefore__(Agreement agreement, Properties properties,BusinessFunctionModifier function) {
+		super.__listenExecuteUpdateBefore__(agreement, properties, function);
+		Strings fieldsNames = __getFieldsFromProperties__(properties);
+		if(CollectionHelper.contains(fieldsNames, Agreement.FIELD_CLOSED)) {
+			Long deliveryCount = __inject__(DeliveryPersistence.class).countByAgreementsByClosed(Boolean.FALSE, agreement);
+			if( deliveryCount > 0)
+				throw new RuntimeException("Le contrat "+agreement.getCode()+" ne peut pas être clos car il a "+deliveryCount+" livraison(s) en cours.");
+		}
+	}
 }

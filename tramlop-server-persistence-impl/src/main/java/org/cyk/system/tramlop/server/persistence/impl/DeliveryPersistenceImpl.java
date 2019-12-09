@@ -32,14 +32,15 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 
 	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT = "SELECT delivery FROM Delivery delivery WHERE delivery.closed = %s AND "
 			+ " delivery.truck.code IN :trucksCodes";
-		
-	private String readByAgreementsCodes,readWhereDeliveryClosedIsFalseExistByTrucksCodes,readView;
+	
+	private String readByAgreementsCodes,readWhereDeliveryClosedIsFalseExistByTrucksCodes,readByAgreementsCodesByClosed,countByAgreementsCodesByClosed,readView;
 	
 	@Override
 	protected void __listenPostConstructPersistenceQueries__() {
 		super.__listenPostConstructPersistenceQueries__();
 		addQueryCollectInstances(readByAgreementsCodes, "SELECT delivery FROM Delivery delivery WHERE delivery.agreement.code = :agreementsCodes");
 		addQueryCollectInstances(readWhereDeliveryClosedIsFalseExistByTrucksCodes, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT, "false"));
+		addQueryCollectInstances(readByAgreementsCodesByClosed, "SELECT delivery FROM Delivery delivery WHERE delivery.agreement.code IN :agreementsCodes AND delivery.closed = :closed");
 		addQuery(readView, "SELECT new  org.cyk.system.tramlop.server.persistence.entities.Delivery(delivery.identifier,truck.code,CONCAT(driver.person.firstName,' ',driver.person.lastNames)" + 
 				"	,product.name,place.name" + 
 				"	,weighing_before_load.weightInKiloGram,weighing_after_load.weightInKiloGram,weighing_after_load.weightInKiloGram - weighing_before_load.weightInKiloGram" + 
@@ -107,6 +108,26 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 			properties = new Properties();
 		properties.setIfNull(Properties.QUERY_IDENTIFIER, readWhereDeliveryClosedIsFalseExistByTrucksCodes);
 		return __readMany__(properties, ____getQueryParameters____(properties,trucksCodes));
+	}
+	
+	@Override
+	public Collection<Delivery> readByAgreementsCodesByClosed(Collection<String> agreementsCodes, Boolean closed,Properties properties) {
+		if(CollectionHelper.isEmpty(agreementsCodes))
+			return null;
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByAgreementsCodesByClosed);
+		return __readMany__(properties, ____getQueryParameters____(properties,agreementsCodes,closed));
+	}
+	
+	@Override
+	public Long countByAgreementsCodesByClosed(Collection<String> agreementsCodes, Boolean closed,Properties properties) {
+		if(CollectionHelper.isEmpty(agreementsCodes))
+			return null;
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, countByAgreementsCodesByClosed);
+		return __count__(properties, ____getQueryParameters____(properties,agreementsCodes,closed));
 	}
 	
 	@Override
@@ -231,6 +252,11 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 			if(ArrayHelper.isEmpty(objects))
 				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_AGREEMENT)};
 			return new Object[]{"agreementsCodes",objects[0]};
+		}
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodesByClosed)) {
+			if(ArrayHelper.isEmpty(objects))
+				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_AGREEMENT),queryContext.getFilterByKeysValue(Delivery.FIELD_CLOSED)};
+			return new Object[]{"agreementsCodes",objects[0],"closed",objects[1]};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);
 	}

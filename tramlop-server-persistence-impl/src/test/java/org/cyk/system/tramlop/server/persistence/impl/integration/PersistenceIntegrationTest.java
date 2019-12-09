@@ -383,6 +383,34 @@ public class PersistenceIntegrationTest extends AbstractPersistenceArquillianInt
 	}
 	
 	@Test
+	public void readDeliveryByAgreementsCodesByClosed_a1_true() {
+		createDataBase();
+		Collection<Delivery> deliveries = __inject__(DeliveryPersistence.class).readByAgreementsCodesByClosed(Boolean.TRUE, "a1");
+		assertThat(deliveries).isNotNull();
+		assertThat(deliveries).isEmpty();
+	}
+	
+	@Test
+	public void readDeliveryByAgreementsCodesByClosed_a1_false() {
+		createDataBase();
+		Collection<Delivery> deliveries = __inject__(DeliveryPersistence.class).readByAgreementsCodesByClosed(Boolean.FALSE, "a1");
+		assertThat(deliveries).isNotNull();
+		assertThat(deliveries.stream().map(Delivery::getCode).collect(Collectors.toList())).containsExactlyInAnyOrder("d1","d2","d3","d4");
+	}
+	
+	@Test
+	public void countDeliveryByAgreementsCodesByClosed_a1_true() {
+		createDataBase();
+		assertThat(__inject__(DeliveryPersistence.class).countByAgreementsCodesByClosed(Boolean.TRUE, "a1")).isEqualTo(0l);
+	}
+	
+	@Test
+	public void countDeliveryByAgreementsCodesByClosed_a1_false() {
+		createDataBase();
+		assertThat(__inject__(DeliveryPersistence.class).countByAgreementsCodesByClosed(Boolean.FALSE, "a1")).isEqualTo(4l);
+	}
+	
+	@Test
 	public void readDeliveryByAgreementsCodes_a2() {
 		createDataBase();
 		Collection<Delivery> deliveries = ((ReadDeliveryByAgreements)__inject__(DeliveryPersistence.class)).readByAgreementsCodes("a2");
