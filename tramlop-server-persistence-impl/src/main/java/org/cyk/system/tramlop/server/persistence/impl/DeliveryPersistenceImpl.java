@@ -132,6 +132,13 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				delivery.setWeightInKiloGramOfProductLost(delivery.getWeightInKiloGramOfProductAfterLoad()-delivery.getWeightInKiloGramOfProductAfterUnload());
 			}
 		}
+		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOSTABLE)) {
+			if(CollectionHelper.getSize(delivery.getTasks()) > 4) {
+				setTasksIfNull(delivery);
+				delivery.setWeightInKiloGramOfProductLostable(NumberHelper.getInteger(NumberHelper.multiply(delivery.getWeightInKiloGramOfProductAfterLoad()
+						,CollectionHelper.getElementAt(delivery.getTasks(), 1).getProduct().getLossRate())));
+			}
+		}
 	}
 	
 	@Override
@@ -140,7 +147,7 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 		if(field.getName().equals(Delivery.FIELD_TASKS)) {
 			Collection<DeliveryTask> deliveryTasks = ((ReadDeliveryTaskByDeliveriesCodes)__inject__(DeliveryTaskPersistence.class)).readByDeliveries(delivery);
 			if(CollectionHelper.isNotEmpty(deliveryTasks))
-				delivery.setTasks(deliveryTasks.stream().map(DeliveryTask::getTask).collect(Collectors.toList()));
+				delivery.setTasks(deliveryTasks.stream().map(deliveryTask -> deliveryTask.getTask().setExistence(deliveryTask.getExistence())).collect(Collectors.toList()));
 		}
 	}
 	

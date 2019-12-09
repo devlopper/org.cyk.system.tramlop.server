@@ -39,6 +39,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@Transient private Integer weightInKiloGramOfProductAfterLoad;
 	@Transient private Integer weightInKiloGramOfProductAfterUnload;
 	@Transient private Integer weightInKiloGramOfProductLost;
+	@Transient private Integer weightInKiloGramOfProductLostable;
 	@Transient private Collection<Truck> trucks;
 	
 	public Delivery(String identifier,String truckCode,String driverNames,String productName,String destinationName,int weightBeforeLoad,int weightAfterLoad
@@ -142,6 +143,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD = "weightInKiloGramOfProductAfterLoad";
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_UNLOAD = "weightInKiloGramOfProductAfterUnload";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOSTABLE = "weightInKiloGramOfProductLostable";
 	public static final String FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOST = "weightInKiloGramOfProductLost";
 	public static final String FIELD_TASKS = "tasks";
 	
