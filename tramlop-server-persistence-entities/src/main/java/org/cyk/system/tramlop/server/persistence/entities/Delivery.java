@@ -33,6 +33,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	@NotNull @ManyToOne @JoinColumn(name = COLUMN_DRIVER) private Driver driver;
 	@NotNull @Column(name=COLUMN_CLOSED) private Boolean closed;
 	
+	@Transient private Path path;
 	@Transient private Product product;
 	@Transient private Integer weightInKiloGram;
 	@Transient private Collection<Task> tasks;
@@ -136,6 +137,7 @@ public class Delivery extends AbstractIdentifiableSystemScalarStringIdentifiable
 	
 	public static final String FIELD_AGREEMENT = "agreement";
 	public static final String FIELD_TRUCK = "truck";
+	public static final String FIELD_PATH = "path";
 	public static final String FIELD_TRUCKS = "trucks";
 	public static final String FIELD_DRIVER = "driver";
 	public static final String FIELD_CLOSED = "closed";

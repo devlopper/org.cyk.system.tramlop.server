@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
 import org.cyk.system.tramlop.server.persistence.api.LoadingPersistence;
+import org.cyk.system.tramlop.server.persistence.api.PathPersistence;
 import org.cyk.system.tramlop.server.persistence.api.WeighingPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadDeliveryTaskByDeliveriesCodes;
@@ -158,6 +159,14 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				setTasksIfNull(delivery);
 				delivery.setWeightInKiloGramOfProductLostable(NumberHelper.getInteger(NumberHelper.multiply(delivery.getWeightInKiloGramOfProductAfterLoad()
 						,CollectionHelper.getElementAt(delivery.getTasks(), 1).getProduct().getLossRate())));
+			}
+		}
+		
+		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_PATH)) {
+			setTasksIfNull(delivery);
+			if(CollectionHelper.getSize(delivery.getTasks()) > 1) {
+				delivery.setPath(__inject__(PathPersistence.class).readByDepartureByArrival(delivery.getAgreement().getDeparturePlace()
+						, CollectionHelper.getElementAt(delivery.getTasks(),1).getUnloadingPlace()));	
 			}
 		}
 	}
