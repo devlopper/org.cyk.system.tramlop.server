@@ -125,6 +125,14 @@ public interface DeliveryPersistence extends PersistenceEntity<Delivery> {
 		return countByAgreementsByClosed(CollectionHelper.listOf(agreements),closed,null);
 	}
 	
+	/* get by closed */
+	
+	Collection<Delivery> readByClosed(Boolean closed,Properties properties);
+	
+	default Collection<Delivery> readByClosed(Boolean closed) {
+		return readByClosed(closed,null);
+	}
+	
 	/**/
 	
 	String READ_WIEW = QueryIdentifierBuilder.getInstance().build(Delivery.class,"readView");

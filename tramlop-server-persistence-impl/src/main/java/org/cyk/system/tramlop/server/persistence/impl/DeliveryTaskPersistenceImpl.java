@@ -21,14 +21,25 @@ import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 public class DeliveryTaskPersistenceImpl extends AbstractPersistenceEntityImpl<DeliveryTask> implements DeliveryTaskPersistence,ReadDeliveryTaskByDeliveriesCodes,Serializable {
 	private static final long serialVersionUID = 1L;
 
-private String readByDeliveryCodeByTaskCode,readByDeliveryCodeByTaskOrderNumber,readByDeliveriesCodes;
+private String readByDeliveryCodeByTaskCode,readByDeliveryCodeByTaskOrderNumber,readByDeliveriesCodes,readByDeliveriesCodesByTasksCodes;
 	
 	@Override
 	protected void __listenPostConstructPersistenceQueries__() {
 		super.__listenPostConstructPersistenceQueries__();
+		addQueryCollectInstances(readByDeliveriesCodesByTasksCodes, "SELECT deliveryTask FROM DeliveryTask deliveryTask WHERE deliveryTask.delivery.code IN :deliveriesCodes AND deliveryTask.task.code IN :tasksCodes");
 		addQueryCollectInstances(readByDeliveryCodeByTaskCode, "SELECT deliveryTask FROM DeliveryTask deliveryTask WHERE deliveryTask.delivery.code = :deliveryCode AND deliveryTask.task.code = :taskCode ORDER BY deliveryTask.task.orderNumber ASC");
 		addQueryCollectInstances(readByDeliveryCodeByTaskOrderNumber, "SELECT deliveryTask FROM DeliveryTask deliveryTask WHERE deliveryTask.delivery.code = :deliveryCode AND deliveryTask.task.orderNumber = :orderNumber ORDER BY deliveryTask.task.orderNumber ASC");
 		addQueryCollectInstances(readByDeliveriesCodes, "SELECT deliveryTask FROM DeliveryTask deliveryTask WHERE deliveryTask.delivery.code IN :deliveriesCodes ORDER BY deliveryTask.task.orderNumber ASC");
+	}
+	
+	@Override
+	public Collection<DeliveryTask> readByDeliveriesCodesByTasksCodes(Collection<String> deliveriesCodes,Collection<String> tasksCodes, Properties properties) {
+		if(CollectionHelper.isEmpty(deliveriesCodes) || CollectionHelper.isEmpty(tasksCodes))
+			return null;
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByDeliveriesCodesByTasksCodes);
+		return __readMany__(properties, ____getQueryParameters____(properties,deliveriesCodes,tasksCodes));
 	}
 
 	@Override
@@ -84,6 +95,9 @@ private String readByDeliveryCodeByTaskCode,readByDeliveryCodeByTaskOrderNumber,
 		}
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByDeliveriesCodes)) {
 			return new Object[]{"deliveriesCodes",objects[0]};
+		}
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByDeliveriesCodesByTasksCodes)) {
+			return new Object[]{"deliveriesCodes",objects[0],"tasksCodes",objects[1]};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);
 	}

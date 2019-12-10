@@ -30,6 +30,7 @@ public class DeliveryDto extends AbstractIdentifiableSystemScalarStringIdentifia
 	private Integer weightInKiloGramOfProductAfterUnload;
 	private Integer weightInKiloGramOfProductLost;
 	private Integer weightInKiloGramOfProductLostable;
+	private Integer durationInMinute;
 	private ArrayList<TaskDto> tasks;
 	private ArrayList<TruckDto> trucks;
 	

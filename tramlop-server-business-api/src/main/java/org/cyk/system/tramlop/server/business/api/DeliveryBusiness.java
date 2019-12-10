@@ -5,4 +5,6 @@ import org.cyk.utility.server.business.BusinessEntity;
 
 public interface DeliveryBusiness extends BusinessEntity<Delivery> {
 
+	void sendAlertWhereDurationExceed();
+	
 }

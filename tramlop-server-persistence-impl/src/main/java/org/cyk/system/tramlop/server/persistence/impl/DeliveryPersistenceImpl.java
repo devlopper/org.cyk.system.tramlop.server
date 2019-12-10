@@ -1,6 +1,8 @@
 package org.cyk.system.tramlop.server.persistence.impl;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -34,11 +36,12 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 	private static final String READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT = "SELECT delivery FROM Delivery delivery WHERE delivery.closed = %s AND "
 			+ " delivery.truck.code IN :trucksCodes";
 	
-	private String readByAgreementsCodes,readWhereDeliveryClosedIsFalseExistByTrucksCodes,readByAgreementsCodesByClosed,countByAgreementsCodesByClosed,readView;
+	private String readByAgreementsCodes,readWhereDeliveryClosedIsFalseExistByTrucksCodes,readByAgreementsCodesByClosed,countByAgreementsCodesByClosed,readView,readByClosed;
 	
 	@Override
 	protected void __listenPostConstructPersistenceQueries__() {
 		super.__listenPostConstructPersistenceQueries__();
+		addQueryCollectInstances(readByClosed, "SELECT delivery FROM Delivery delivery WHERE delivery.closed = :closed");
 		addQueryCollectInstances(readByAgreementsCodes, "SELECT delivery FROM Delivery delivery WHERE delivery.agreement.code = :agreementsCodes");
 		addQueryCollectInstances(readWhereDeliveryClosedIsFalseExistByTrucksCodes, String.format(READ_WHERE_DELIVERY_CLOSED_IS_FALSE_EXIST_BY_TRUCKS_CODES_FORMAT, "false"));
 		addQueryCollectInstances(readByAgreementsCodesByClosed, "SELECT delivery FROM Delivery delivery WHERE delivery.agreement.code IN :agreementsCodes AND delivery.closed = :closed");
@@ -132,6 +135,14 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 	}
 	
 	@Override
+	public Collection<Delivery> readByClosed(Boolean closed, Properties properties) {
+		if(properties == null)
+			properties = new Properties();
+		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByClosed);
+		return __readMany__(properties, ____getQueryParameters____(properties,closed));
+	}
+	
+	@Override
 	protected void __listenExecuteReadAfterSetFieldsValues__(Delivery delivery, Strings fieldsNames, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldsValues__(delivery, fieldsNames, properties);
 		if(CollectionHelper.contains(fieldsNames, Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_AFTER_LOAD)) {
@@ -157,16 +168,32 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_WEIGHT_IN_KILO_GRAM_OF_PRODUCT_LOSTABLE)) {
 			if(CollectionHelper.getSize(delivery.getTasks()) > 4) {
 				setTasksIfNull(delivery);
-				delivery.setWeightInKiloGramOfProductLostable(NumberHelper.getInteger(NumberHelper.multiply(delivery.getWeightInKiloGramOfProductAfterLoad()
-						,CollectionHelper.getElementAt(delivery.getTasks(), 1).getProduct().getLossRate())));
+				Task task = CollectionHelper.getElementAt(delivery.getTasks(), 1);
+				if(task != null && task.getProduct() != null) {
+					delivery.setWeightInKiloGramOfProductLostable(NumberHelper.getInteger(NumberHelper.multiply(delivery.getWeightInKiloGramOfProductAfterLoad()
+							,task.getProduct().getLossRate())));	
+				}				
 			}
-		}
-		
+		}		
 		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_PATH)) {
 			setTasksIfNull(delivery);
 			if(CollectionHelper.getSize(delivery.getTasks()) > 1) {
 				delivery.setPath(__inject__(PathPersistence.class).readByDepartureByArrival(delivery.getAgreement().getDeparturePlace()
 						, CollectionHelper.getElementAt(delivery.getTasks(),1).getUnloadingPlace()));	
+			}
+		}
+		if(CollectionHelper.contains(fieldsNames,Delivery.FIELD_DURATION_IN_MINUTE)) {
+			setTasksIfNull(delivery);
+			if(CollectionHelper.getSize(delivery.getTasks()) > 2) {
+				LocalDateTime start = CollectionHelper.getElementAt(delivery.getTasks(),2).getExistence().getCreationDate();
+				if(start != null) {
+					LocalDateTime end = null;
+					if(CollectionHelper.getSize(delivery.getTasks()) > 3)
+						end = CollectionHelper.getElementAt(delivery.getTasks(),3).getExistence().getCreationDate();
+					else
+						end = LocalDateTime.now();
+					delivery.setDurationInMinute(Long.valueOf(Duration.between(start, end).toMinutes()).intValue());	
+				}				
 			}
 		}
 	}
@@ -211,7 +238,7 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
 					if(deliveryTask != null && Boolean.TRUE.equals(deliveryTask.getTask().getProductable())) {
-						Loading loading = __inject__(LoadingPersistence.class).readByDeliveryByTask(delivery, task);
+						Loading loading = __inject__(LoadingPersistence.class).readByDeliveryTask(deliveryTask);
 						if(loading != null)
 							task.setProduct(loading.getProduct());
 					}
@@ -222,7 +249,7 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 				for(Task task : delivery.getTasks()) {
 					DeliveryTask deliveryTask = __inject__(DeliveryTaskPersistence.class).readByDeliveryByTask(delivery, task);
 					if(deliveryTask != null && Boolean.TRUE.equals(deliveryTask.getTask().getProductable())) {
-						Loading loading = __inject__(LoadingPersistence.class).readByDeliveryByTask(delivery, task);
+						Loading loading = __inject__(LoadingPersistence.class).readByDeliveryTask(deliveryTask);
 						if(loading != null)
 							task.setUnloadingPlace(loading.getUnloadingPlace());
 					}
@@ -266,6 +293,9 @@ public class DeliveryPersistenceImpl extends AbstractPersistenceEntityImpl<Deliv
 			if(ArrayHelper.isEmpty(objects))
 				objects = new Object[] {queryContext.getFilterByKeysValue(Delivery.FIELD_AGREEMENT),queryContext.getFilterByKeysValue(Delivery.FIELD_CLOSED)};
 			return new Object[]{"agreementsCodes",objects[0],"closed",objects[1]};
+		}
+		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByClosed)) {
+			return new Object[]{"closed",objects[0]};
 		}
 		return super.__getQueryParameters__(queryContext, properties, objects);
 	}
