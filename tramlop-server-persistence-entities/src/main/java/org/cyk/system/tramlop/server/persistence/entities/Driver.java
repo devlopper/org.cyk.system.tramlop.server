@@ -3,12 +3,10 @@ package org.cyk.system.tramlop.server.persistence.entities;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.cyk.utility.__kernel__.object.__static__.persistence.AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl;
 import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Person;
 
 import lombok.Getter;
@@ -18,11 +16,9 @@ import lombok.experimental.Accessors;
 
 @Getter @Setter @Accessors(chain=true) @NoArgsConstructor
 @Entity @Table(name=Driver.TABLE_NAME)
-public class Driver extends AbstractIdentifiableSystemScalarStringIdentifiableBusinessStringImpl implements Serializable {
+public class Driver extends AbstractPersonImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Embedded private Person person;
-	
 	@Transient private Collection<Agreement> agreements;
 	@Transient private Collection<Truck> trucks;
 	
@@ -31,7 +27,6 @@ public class Driver extends AbstractIdentifiableSystemScalarStringIdentifiableBu
 		this.person = person;
 	}
 	
-	public static final String FIELD_PERSON = "person";
 	public static final String FIELD_AGREEMENTS = "agreements";
 	public static final String FIELD_TRUCKS = "trucks";
 	

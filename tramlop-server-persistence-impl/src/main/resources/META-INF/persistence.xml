@@ -3,6 +3,7 @@
     <persistence-unit name="tramlopPersistenceUnit" transaction-type="JTA">
     	<jta-data-source>${data.source.jndi.name}</jta-data-source>
     	<exclude-unlisted-classes>true</exclude-unlisted-classes>
+    	<class>org.cyk.system.tramlop.server.persistence.entities.Employee</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.Product</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.Truck</class>
     	<class>org.cyk.system.tramlop.server.persistence.entities.Driver</class>

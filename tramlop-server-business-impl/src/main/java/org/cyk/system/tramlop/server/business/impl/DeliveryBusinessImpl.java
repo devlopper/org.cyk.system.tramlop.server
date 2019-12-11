@@ -15,17 +15,20 @@ import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryTaskPersistence;
+import org.cyk.system.tramlop.server.persistence.api.EmployeePersistence;
 import org.cyk.system.tramlop.server.persistence.api.LoadingPersistence;
 import org.cyk.system.tramlop.server.persistence.api.PathPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TaskPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
 import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
+import org.cyk.system.tramlop.server.persistence.entities.Employee;
 import org.cyk.system.tramlop.server.persistence.entities.Loading;
 import org.cyk.system.tramlop.server.persistence.entities.Path;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
+import org.cyk.utility.__kernel__.protocol.smtp.MailSender;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.business.AbstractBusinessEntityImpl;
 import org.cyk.utility.server.business.BusinessFunctionCreator;
@@ -42,6 +45,7 @@ public class DeliveryBusinessImpl extends AbstractBusinessEntityImpl<Delivery, D
 			return;
 		Collection<DeliveryTask> deliveryTasks = __inject__(DeliveryTaskPersistence.class)
 				.readByDeliveriesByTasksCodes(deliveries, CollectionHelper.listOf(Task.CODE_WEIGH_AFTER_LOAD,Task.CODE_LOAD,Task.CODE_WEIGH_BEFORE_UNLOAD));
+		Collection<Delivery> deliveriesWhereDurationExceed = null;
 		for(Delivery delivery : deliveries) {
 			DeliveryTask load = CollectionHelper.getFirst(deliveryTasks.stream()
 					.filter(deliveryTask -> deliveryTask.getDelivery().equals(delivery) && deliveryTask.getTask().getCode().equals(Task.CODE_LOAD))
@@ -66,9 +70,23 @@ public class DeliveryBusinessImpl extends AbstractBusinessEntityImpl<Delivery, D
 				continue;
 			Duration duration = Duration.between(start.getExistence().getCreationDate(), LocalDateTime.now());
 			if(duration.toMinutes() > path.getDurationInMinute()) {
-				System.out.println("DeliveryBusinessImpl.sendAlertWhereDurationExceed() *********** "+delivery.getCode()+" TIME HAS EXCEED");
+				if(deliveriesWhereDurationExceed == null)
+					deliveriesWhereDurationExceed = new ArrayList<>();
+				deliveriesWhereDurationExceed.add(delivery);
 			}
 		}
+		if(CollectionHelper.isEmpty(deliveriesWhereDurationExceed))
+			return;
+		Collection<Employee> employees = __inject__(EmployeePersistence.class).readWhereNotifiableOnDeliveryDurationAlertIsTrue();
+		if(CollectionHelper.isEmpty(employees))
+			return;
+		Collection<String> electronicMailAdresses = employees.stream().map(x-> x.getPerson()!=null && x.getPerson().getContact()!=null 
+				? x.getPerson().getContact().getElectronicMailAddress() : null).filter(x-> StringHelper.isNotBlank(x)).collect(Collectors.toList());
+		if(CollectionHelper.isEmpty(electronicMailAdresses))
+			return;
+		MailSender.getInstance().send("Temps de livraison écoulé", "Le temps de livraison des camions suivants est écoulé : "
+			+deliveries.stream().map(x -> x.getTruck().getCode()).collect(Collectors.toList()), electronicMailAdresses);
+		System.out.println("DeliveryBusinessImpl.sendAlertWhereDurationExceed() : "+deliveries.stream().map(x -> x.getTruck().getCode()).collect(Collectors.toList()));
 	}
 	
 	@Override

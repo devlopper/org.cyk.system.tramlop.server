@@ -26,6 +26,7 @@ public class WeighingPersistenceImpl extends AbstractPersistenceEntityImpl<Weigh
 	public Weighing readByDeliveryCodeByTaskCode(String deliveryCode, String taskCode) {
 		if(StringHelper.isBlank(deliveryCode) || StringHelper.isBlank(taskCode))
 			return null;
+		Properties properties = null;
 		if(properties == null)
 			properties = new Properties();
 		properties.setIfNull(Properties.QUERY_IDENTIFIER, readByDeliveryCodeByTaskCode);
