@@ -40,7 +40,8 @@ public class Product extends AbstractIdentifiableSystemScalarStringIdentifiableB
 		return (Product) super.setName(name);
 	}
 	
-	public static final String FIELD_LOSS_RATE = "lossRate";	
+	public static final String FIELD_LOSS_RATE = "lossRate";
+	public static final String FIELD_WEIGHT_IN_KILO_GRAM = "weightInKiloGram";
 	
 	public static final String COLUMN_LOSS_RATE = FIELD_LOSS_RATE;	
 	

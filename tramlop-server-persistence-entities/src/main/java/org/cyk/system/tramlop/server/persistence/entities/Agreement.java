@@ -41,6 +41,8 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@Transient private Collection<Place> arrivalPlaces;
 	@Transient private Collection<Delivery> deliveries;
 	
+	@Transient private Collection<AgreementProduct> agreementProducts;
+	
 	public Agreement(String code,String customerCode,String departurePlaceCode,Boolean closed) {
 		super(code);
 		setCustomerFromCode(customerCode);

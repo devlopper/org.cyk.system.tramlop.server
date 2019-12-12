@@ -2,18 +2,20 @@ package org.cyk.system.tramlop.server.persistence.impl;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementProductPersistence;
 import org.cyk.system.tramlop.server.persistence.api.PlacePersistence;
-import org.cyk.system.tramlop.server.persistence.api.ProductPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementByTrucksCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadArrivalPlaceByAgreementsCodes;
-import org.cyk.system.tramlop.server.persistence.api.query.ReadProductByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
+import org.cyk.system.tramlop.server.persistence.entities.Product;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.constant.ConstantEmpty;
@@ -62,12 +64,25 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 	@Override
 	protected void __listenExecuteReadAfterSetFieldValue__(Agreement agreement, Field field, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldValue__(agreement, field, properties);
-		if(field.getName().equals(Agreement.FIELD_PRODUCTS))
-			agreement.setProducts(((ReadProductByAgreementsCodes)__inject__(ProductPersistence.class)).readByAgreementsCodes(agreement.getCode()));
-		else if(field.getName().equals(Agreement.FIELD_ARRIVAL_PLACES))
+		if(field.getName().equals(Agreement.FIELD_PRODUCTS)) {
+			agreement.setAgreementProducts(__inject__(AgreementProductPersistence.class).readByAgreements(agreement));
+			if(CollectionHelper.isNotEmpty(agreement.getAgreementProducts()))
+				agreement.setProducts(agreement.getAgreementProducts().stream().map(AgreementProduct::getProduct).collect(Collectors.toList()));
+		} else if(field.getName().equals(Agreement.FIELD_ARRIVAL_PLACES))
 			agreement.setArrivalPlaces(((ReadArrivalPlaceByAgreementsCodes)__inject__(PlacePersistence.class)).readArrivalByAgreementsCodes(agreement.getCode()));
 		else if(field.getName().equals(Agreement.FIELD_TRUCKS))
 			agreement.setTrucks(((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes(agreement.getCode()));
+	}
+	
+	@Override
+	protected void __listenExecuteReadAfterSetFieldValue__(Agreement agreement, String fieldName, Properties properties) {
+		super.__listenExecuteReadAfterSetFieldValue__(agreement, fieldName, properties);
+		if(fieldName.equals(Agreement.FIELD_PRODUCTS+"."+Product.FIELD_WEIGHT_IN_KILO_GRAM)) {
+			if(CollectionHelper.isNotEmpty(agreement.getProducts())) {
+				for(Product product : agreement.getProducts())
+					product.setWeightInKiloGram(agreement.getAgreementProducts().stream().filter(x -> x.getProduct().equals(product)).collect(Collectors.toList()).get(0).getWeightInKiloGram());
+			}
+		}
 	}
 	
 	@Override
