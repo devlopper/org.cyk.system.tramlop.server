@@ -10,14 +10,20 @@ import org.cyk.system.tramlop.server.business.api.AgreementArrivalPlaceBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementProductBusiness;
 import org.cyk.system.tramlop.server.business.api.AgreementTruckBusiness;
+import org.cyk.system.tramlop.server.persistence.api.AgreementArrivalPlacePersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementProductPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.DeliveryPersistence;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementArrivalPlaceByAgreements;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementTruckByAgreements;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementTruck;
+import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
+import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
@@ -72,6 +78,44 @@ public class AgreementBusinessImpl extends AbstractBusinessEntityImpl<Agreement,
 						if(agreementProduct.getProduct().equals(product)) {
 							agreementProduct.setWeightInKiloGram(product.getWeightInKiloGram());
 							__inject__(AgreementProductPersistence.class).update(agreementProduct);
+							break;
+						}
+					}
+				}
+			}
+		}else if(CollectionHelper.contains(fieldsNames, Agreement.FIELD_ARRIVAL_PLACES)) {
+			Collection<AgreementArrivalPlace> databaseAgreementArrivalPlaces = ((ReadAgreementArrivalPlaceByAgreements)__inject__(AgreementArrivalPlacePersistence.class)).readByAgreements(agreement);
+			Collection<Place> databasePlaces = CollectionHelper.isEmpty(databaseAgreementArrivalPlaces) ? null : databaseAgreementArrivalPlaces.stream()
+					.map(AgreementArrivalPlace::getPlace).collect(Collectors.toList());
+			
+			__delete__(agreement.getArrivalPlaces(), databaseAgreementArrivalPlaces,AgreementArrivalPlace.FIELD_PLACE);
+			__save__(AgreementArrivalPlace.class,agreement.getArrivalPlaces(), databasePlaces, AgreementArrivalPlace.FIELD_PLACE, agreement, AgreementArrivalPlace.FIELD_AGREEMENT);
+			
+			if(CollectionHelper.isNotEmpty(databaseAgreementArrivalPlaces) && CollectionHelper.isNotEmpty(agreement.getArrivalPlaces())) {
+				for(AgreementArrivalPlace agreementArrivalPlace : databaseAgreementArrivalPlaces) {
+					for(Place place : agreement.getArrivalPlaces()) {
+						if(agreementArrivalPlace.getPlace().equals(place)) {
+							agreementArrivalPlace.setDurationInMinute(place.getDurationInMinute());
+							__inject__(AgreementArrivalPlacePersistence.class).update(agreementArrivalPlace);
+							break;
+						}
+					}
+				}
+			}
+		}else if(CollectionHelper.contains(fieldsNames, Agreement.FIELD_TRUCKS)) {
+			Collection<AgreementTruck> databaseAgreementTrucks = ((ReadAgreementTruckByAgreements)__inject__(AgreementTruckPersistence.class)).readByAgreements(agreement);
+			Collection<Truck> databaseTrucks = CollectionHelper.isEmpty(databaseAgreementTrucks) ? null : databaseAgreementTrucks.stream()
+					.map(AgreementTruck::getTruck).collect(Collectors.toList());
+			
+			__delete__(agreement.getTrucks(), databaseAgreementTrucks,AgreementTruck.FIELD_TRUCK);
+			__save__(AgreementTruck.class,agreement.getTrucks(), databaseTrucks, AgreementTruck.FIELD_TRUCK, agreement, AgreementTruck.FIELD_AGREEMENT);
+			
+			if(CollectionHelper.isNotEmpty(databaseAgreementTrucks) && CollectionHelper.isNotEmpty(agreement.getTrucks())) {
+				for(AgreementTruck agreementTruck : databaseAgreementTrucks) {
+					for(Truck truck : agreement.getTrucks()) {
+						if(agreementTruck.getTruck().equals(truck)) {
+							agreementTruck.setDriver(truck.getDriver());
+							__inject__(AgreementTruckPersistence.class).update(agreementTruck);
 							break;
 						}
 					}

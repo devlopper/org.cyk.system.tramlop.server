@@ -6,15 +6,17 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.cyk.system.tramlop.server.persistence.api.AgreementArrivalPlacePersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementProductPersistence;
-import org.cyk.system.tramlop.server.persistence.api.PlacePersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementArrivalPlaceByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementByTrucksCodes;
-import org.cyk.system.tramlop.server.persistence.api.query.ReadArrivalPlaceByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
+import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
+import org.cyk.system.tramlop.server.persistence.entities.Place;
 import org.cyk.system.tramlop.server.persistence.entities.Product;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
@@ -68,9 +70,11 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 			agreement.setAgreementProducts(__inject__(AgreementProductPersistence.class).readByAgreements(agreement));
 			if(CollectionHelper.isNotEmpty(agreement.getAgreementProducts()))
 				agreement.setProducts(agreement.getAgreementProducts().stream().map(AgreementProduct::getProduct).collect(Collectors.toList()));
-		} else if(field.getName().equals(Agreement.FIELD_ARRIVAL_PLACES))
-			agreement.setArrivalPlaces(((ReadArrivalPlaceByAgreementsCodes)__inject__(PlacePersistence.class)).readArrivalByAgreementsCodes(agreement.getCode()));
-		else if(field.getName().equals(Agreement.FIELD_TRUCKS))
+		} else if(field.getName().equals(Agreement.FIELD_ARRIVAL_PLACES)) {
+			agreement.setAgreementArrivalPlaces( ((ReadAgreementArrivalPlaceByAgreements)__inject__(AgreementArrivalPlacePersistence.class)).readByAgreements(agreement));
+			if(CollectionHelper.isNotEmpty(agreement.getAgreementArrivalPlaces()))
+				agreement.setArrivalPlaces(agreement.getAgreementArrivalPlaces().stream().map(AgreementArrivalPlace::getPlace).collect(Collectors.toList()));
+		}else if(field.getName().equals(Agreement.FIELD_TRUCKS))
 			agreement.setTrucks(((ReadTruckByAgreementsCodes)__inject__(TruckPersistence.class)).readByAgreementsCodes(agreement.getCode()));
 	}
 	
@@ -81,6 +85,11 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 			if(CollectionHelper.isNotEmpty(agreement.getProducts())) {
 				for(Product product : agreement.getProducts())
 					product.setWeightInKiloGram(agreement.getAgreementProducts().stream().filter(x -> x.getProduct().equals(product)).collect(Collectors.toList()).get(0).getWeightInKiloGram());
+			}
+		}else if(fieldName.equals(Agreement.FIELD_ARRIVAL_PLACES+"."+Place.FIELD_DURATION_IN_MINUTE)) {
+			if(CollectionHelper.isNotEmpty(agreement.getArrivalPlaces())) {
+				for(Place place : agreement.getArrivalPlaces())
+					place.setDurationInMinute(agreement.getAgreementArrivalPlaces().stream().filter(x -> x.getPlace().equals(place)).collect(Collectors.toList()).get(0).getDurationInMinute());
 			}
 		}
 	}
