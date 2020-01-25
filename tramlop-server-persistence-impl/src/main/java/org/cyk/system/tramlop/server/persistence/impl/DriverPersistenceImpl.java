@@ -9,10 +9,10 @@ import org.cyk.system.tramlop.server.persistence.api.query.ReadDriversByTrucks;
 import org.cyk.system.tramlop.server.persistence.entities.Driver;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
+import org.cyk.utility.__kernel__.persistence.query.QueryContext;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
 import org.cyk.utility.server.persistence.PersistenceFunctionReader;
-import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class DriverPersistenceImpl extends AbstractPersistenceEntityImpl<Driver> implements DriverPersistence,ReadDriversByTrucks,Serializable {
@@ -67,7 +67,7 @@ public class DriverPersistenceImpl extends AbstractPersistenceEntityImpl<Driver>
 	}
 	
 	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+	protected Object[] __getQueryParameters__(QueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(READ_WHERE_NOT_EXIST_AGREEMENT_CLOSED_IS_FALSE))
 			return null;
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByTrucksCodes))

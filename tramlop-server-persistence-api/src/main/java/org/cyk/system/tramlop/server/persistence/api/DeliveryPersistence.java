@@ -8,7 +8,7 @@ import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.array.ArrayHelper;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
-import org.cyk.utility.__kernel__.persistence.QueryIdentifierBuilder;
+import org.cyk.utility.__kernel__.persistence.query.QueryIdentifierBuilder;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.PersistenceEntity;
 

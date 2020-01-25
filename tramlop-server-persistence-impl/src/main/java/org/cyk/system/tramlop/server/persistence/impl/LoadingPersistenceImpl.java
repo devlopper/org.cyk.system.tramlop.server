@@ -6,10 +6,10 @@ import javax.enterprise.context.ApplicationScoped;
 import org.cyk.system.tramlop.server.persistence.api.LoadingPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Loading;
+import org.cyk.utility.__kernel__.persistence.query.QueryContext;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
-import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class LoadingPersistenceImpl extends AbstractPersistenceEntityImpl<Loading> implements LoadingPersistence,Serializable {
@@ -47,7 +47,7 @@ public class LoadingPersistenceImpl extends AbstractPersistenceEntityImpl<Loadin
 	}
 	
 	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+	protected Object[] __getQueryParameters__(QueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByDeliveryCodeByTaskCode)) {
 			return new Object[]{"deliveryCode",objects[0],"taskCode",objects[1]};
 		}

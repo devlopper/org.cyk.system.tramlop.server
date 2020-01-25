@@ -7,9 +7,9 @@ import javax.enterprise.context.ApplicationScoped;
 import org.cyk.system.tramlop.server.persistence.api.AgreementProductPersistence;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementProduct;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
+import org.cyk.utility.__kernel__.persistence.query.QueryContext;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
-import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class AgreementProductPersistenceImpl extends AbstractPersistenceEntityImpl<AgreementProduct> implements AgreementProductPersistence,Serializable {
@@ -34,7 +34,7 @@ public class AgreementProductPersistenceImpl extends AbstractPersistenceEntityIm
 	}
 	
 	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+	protected Object[] __getQueryParameters__(QueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodes)) {
 			return new Object[]{"agreementsCodes",objects[0]};
 		}

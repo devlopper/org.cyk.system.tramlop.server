@@ -6,7 +6,7 @@ import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.Driver;
 import org.cyk.system.tramlop.server.persistence.entities.Truck;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
-import org.cyk.utility.__kernel__.persistence.QueryIdentifierBuilder;
+import org.cyk.utility.__kernel__.persistence.query.QueryIdentifierBuilder;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.persistence.PersistenceEntity;

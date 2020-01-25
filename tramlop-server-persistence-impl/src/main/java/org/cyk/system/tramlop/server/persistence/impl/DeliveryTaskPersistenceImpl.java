@@ -12,10 +12,10 @@ import org.cyk.system.tramlop.server.persistence.entities.Delivery;
 import org.cyk.system.tramlop.server.persistence.entities.DeliveryTask;
 import org.cyk.system.tramlop.server.persistence.entities.Task;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
+import org.cyk.utility.__kernel__.persistence.query.QueryContext;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.string.StringHelper;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
-import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class DeliveryTaskPersistenceImpl extends AbstractPersistenceEntityImpl<DeliveryTask> implements DeliveryTaskPersistence,ReadDeliveryTaskByDeliveriesCodes,Serializable {
@@ -86,7 +86,7 @@ private String readByDeliveryCodeByTaskCode,readByDeliveryCodeByTaskOrderNumber,
 	}
 	
 	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+	protected Object[] __getQueryParameters__(QueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByDeliveryCodeByTaskCode)) {
 			return new Object[]{"deliveryCode",objects[0],"taskCode",objects[1]};
 		}

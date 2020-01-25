@@ -40,7 +40,7 @@ import org.cyk.utility.__kernel__.object.__static__.persistence.embeddedable.Per
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.__kernel__.random.RandomHelper;
 import org.cyk.utility.__kernel__.string.StringHelper;
-import org.cyk.utility.server.persistence.query.filter.Filter;
+import org.cyk.utility.__kernel__.persistence.query.filter.Filter;
 import org.cyk.utility.server.persistence.test.arquillian.AbstractPersistenceArquillianIntegrationTestWithDefaultDeployment;
 import org.junit.Test;
 

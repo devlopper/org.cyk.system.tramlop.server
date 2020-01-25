@@ -8,9 +8,9 @@ import org.cyk.system.tramlop.server.persistence.api.AgreementArrivalPlacePersis
 import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementArrivalPlaceByAgreements;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
 import org.cyk.utility.__kernel__.collection.CollectionHelper;
+import org.cyk.utility.__kernel__.persistence.query.QueryContext;
 import org.cyk.utility.__kernel__.properties.Properties;
 import org.cyk.utility.server.persistence.AbstractPersistenceEntityImpl;
-import org.cyk.utility.server.persistence.query.PersistenceQueryContext;
 
 @ApplicationScoped
 public class AgreementArrivalPlacePersistenceImpl extends AbstractPersistenceEntityImpl<AgreementArrivalPlace> implements AgreementArrivalPlacePersistence,ReadAgreementArrivalPlaceByAgreements,Serializable {
@@ -35,7 +35,7 @@ public class AgreementArrivalPlacePersistenceImpl extends AbstractPersistenceEnt
 	}
 	
 	@Override
-	protected Object[] __getQueryParameters__(PersistenceQueryContext queryContext, Properties properties,Object... objects) {
+	protected Object[] __getQueryParameters__(QueryContext queryContext, Properties properties,Object... objects) {
 		if(queryContext.getQuery().isIdentifierEqualsToOrQueryDerivedFromQueryIdentifierEqualsTo(readByAgreementsCodes)) {
 			return new Object[]{"agreementsCodes",objects[0]};
 		}
