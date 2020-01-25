@@ -34,6 +34,11 @@ public class AgreementDto extends AbstractIdentifiableSystemScalarStringIdentifi
 	private List<ProductDto> products;
 	private List<TruckDto> trucks;
 	private List<PlaceDto> arrivalPlaces;
+	
+	private List<AgreementProductDto> agreementProducts;
+	private List<AgreementTruckDto> agreementTrucks;
+	private List<AgreementArrivalPlaceDto> agreementArrivalPlaces;
+	
 	private Integer productWeightInKiloGram;
 	private ExistenceDto existence;
 	private Boolean closed;

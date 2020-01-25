@@ -9,9 +9,11 @@ import javax.enterprise.context.ApplicationScoped;
 import org.cyk.system.tramlop.server.persistence.api.AgreementArrivalPlacePersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementPersistence;
 import org.cyk.system.tramlop.server.persistence.api.AgreementProductPersistence;
+import org.cyk.system.tramlop.server.persistence.api.AgreementTruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.TruckPersistence;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementArrivalPlaceByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementByTrucksCodes;
+import org.cyk.system.tramlop.server.persistence.api.query.ReadAgreementTruckByAgreements;
 import org.cyk.system.tramlop.server.persistence.api.query.ReadTruckByAgreementsCodes;
 import org.cyk.system.tramlop.server.persistence.entities.Agreement;
 import org.cyk.system.tramlop.server.persistence.entities.AgreementArrivalPlace;
@@ -66,7 +68,13 @@ public class AgreementPersistenceImpl extends AbstractPersistenceEntityImpl<Agre
 	@Override
 	protected void __listenExecuteReadAfterSetFieldValue__(Agreement agreement, Field field, Properties properties) {
 		super.__listenExecuteReadAfterSetFieldValue__(agreement, field, properties);
-		if(field.getName().equals(Agreement.FIELD_PRODUCTS)) {
+		if(field.getName().equals(Agreement.FIELD_AGREEMENT_PRODUCTS)) {
+			agreement.setAgreementProducts(__inject__(AgreementProductPersistence.class).readByAgreements(agreement));
+		} else if(field.getName().equals(Agreement.FIELD_AGREEMENT_ARRIVAL_PLACES)) {
+			agreement.setAgreementArrivalPlaces( ((ReadAgreementArrivalPlaceByAgreements)__inject__(AgreementArrivalPlacePersistence.class)).readByAgreements(agreement));
+		}else if(field.getName().equals(Agreement.FIELD_AGREEMENT_TRUCKS))
+			agreement.setAgreementTrucks( ((ReadAgreementTruckByAgreements)__inject__(AgreementTruckPersistence.class)).readByAgreements(agreement));
+		else if(field.getName().equals(Agreement.FIELD_PRODUCTS)) {
 			agreement.setAgreementProducts(__inject__(AgreementProductPersistence.class).readByAgreements(agreement));
 			if(CollectionHelper.isNotEmpty(agreement.getAgreementProducts()))
 				agreement.setProducts(agreement.getAgreementProducts().stream().map(AgreementProduct::getProduct).collect(Collectors.toList()));

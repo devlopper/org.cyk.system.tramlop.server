@@ -42,6 +42,7 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	@Transient private Collection<Delivery> deliveries;
 	
 	@Transient private Collection<AgreementProduct> agreementProducts;
+	@Transient private Collection<AgreementTruck> agreementTrucks;
 	@Transient private Collection<AgreementArrivalPlace> agreementArrivalPlaces;
 	
 	public Agreement(String code,String customerCode,String departurePlaceCode,Boolean closed) {
@@ -165,6 +166,10 @@ public class Agreement extends AbstractIdentifiableSystemScalarStringIdentifiabl
 	public static final String FIELD_DRIVERS = "drivers";
 	public static final String FIELD_PRODUCTS = "products";
 	public static final String FIELD_ARRIVAL_PLACES = "arrivalPlaces";
+	
+	public static final String FIELD_AGREEMENT_PRODUCTS = "agreementProducts";
+	public static final String FIELD_AGREEMENT_TRUCKS = "agreementTrucks";
+	public static final String FIELD_AGREEMENT_ARRIVAL_PLACES = "agreementArrivalPlaces";
 	
 	public static final String COLUMN_CUSTOMER = Customer.TABLE_NAME;
 	public static final String COLUMN_DEPARTURE_PLACE = FIELD_DEPARTURE_PLACE;
